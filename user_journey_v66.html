@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head><script type="importmap">{"imports":{"/index.html":"blob:https://private-chat.tim-dev.org/72a3d02e-fd4c-4c25-accf-d6b60a186eb6","/__virtual__/index.html":"blob:https://private-chat.tim-dev.org/72a3d02e-fd4c-4c25-accf-d6b60a186eb6"}}</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SinoPac DAWHO - User Journey Map (多角色切換看板)</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mapYellow: '#FFF176',     /* Target yellow from reference */
+                        mapYellowLight: '#FFF9C4',/* Soft highlight yellow */
+                        mapHeaderYellow: '#FEE135',/* Saturated row header yellow */
+                        mapGrayBg: '#E0E0E0',     /* Touchpoints background gray */
+                        mapBorder: '#D6D6D6',     /* Clean thin borders */
+                    },
+                    fontFamily: {
+                        sans: ['Microsoft JhengHei', 'PingFang TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- html2canvas Libraries -->
+    <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+            background-color: #FAFAFA;
+        }
+        /* Custom scrollbar matching original board feel */
+        .journey-scroll::-webkit-scrollbar {
+            height: 12px;
+        }
+        .journey-scroll::-webkit-scrollbar-track {
+            background: #F1F1F1;
+        }
+        .journey-scroll::-webkit-scrollbar-thumb {
+            background: #C1C1C1;
+            border-radius: 6px;
+        }
+        .journey-scroll::-webkit-scrollbar-thumb:hover {
+            background: #A8A8A8;
+        }
+
+        /* Clean styles for print media fallback */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #full-journey-canvas {
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .journey-scroll {
+                overflow-x: visible !important;
+            }
+        }
+
+        /* Keyframes for horizontal bouncing hint arrow */
+        @keyframes bounce-x {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+        }
+        .animate-bounce-x {
+            animation: bounce-x 1.2s infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased p-4 md:p-8">
+
+    <!-- ========================================== -->
+    <!-- TOP EXPORT & SWITCHER BAR (按組別 1 - 5 順序排列切換列) -->
+    <!-- ========================================== -->
+    <div class="no-print w-full max-w-[3800px] mx-auto mb-6 bg-white border border-slate-200 p-4 rounded-xl shadow-sm flex flex-col xl:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4 flex-shrink-0">
+            <span class="text-2xl">📊</span>
+            <div>
+                <h1 id="main-title" class="font-black text-slate-800 text-lg leading-tight">永豐金大戶投 APP 體驗重塑：<br>Design Thinking Workshop 核心客群旅程地圖成果展</h1>
+                <p class="text-xs text-slate-500">使用者旅程地圖互動看板 (Workshop 數位五角色切換大看板)</p>
+            </div>
+        </div>
+
+        <!-- Role Switcher Buttons (按第一組至第五組順序排列，完美對齊組別！) -->
+        <div class="flex flex-wrap bg-slate-100 p-1.5 rounded-xl border border-slate-200 gap-1">
+            <button id="btn-role-liu" onclick="switchRole('liu')" class="px-5 py-3 rounded-lg text-sm font-black transition-all bg-white text-slate-800 shadow-sm border border-slate-200">
+                👨‍💻 第一組：劉先生
+            </button>
+            <button id="btn-role-chou" onclick="switchRole('chou')" class="px-5 py-3 rounded-lg text-sm font-black transition-all text-slate-500 hover:text-slate-800">
+                👩‍💼 第二組：周夫人
+            </button>
+            <button id="btn-role-tsai" onclick="switchRole('tsai')" class="px-5 py-3 rounded-lg text-sm font-black transition-all text-slate-500 hover:text-slate-800">
+                👩‍🍳 第三組：蔡媽媽
+            </button>
+            <button id="btn-role-liao" onclick="switchRole('liao')" class="px-5 py-3 rounded-lg text-sm font-black transition-all text-slate-500 hover:text-slate-800">
+                🛡️ 第四組：廖先生
+            </button>
+            <button id="btn-role-chuang" onclick="switchRole('chuang')" class="px-5 py-3 rounded-lg text-sm font-black transition-all text-slate-500 hover:text-slate-800">
+                🚀 第五組：莊小錢
+            </button>
+        </div>
+
+        <!-- Sizing & Export Controls -->
+        <div class="flex items-center gap-3 flex-shrink-0">
+            <!-- Map text slider -->
+            <div class="flex items-center gap-2 bg-slate-50 p-2.5 px-4 rounded-xl border border-slate-200 text-xs font-bold text-slate-500">
+                <i class="fa-solid fa-font text-[10px]"></i>
+                <span class="whitespace-nowrap">看板字體</span>
+                <input type="range" min="10" max="22" value="15" id="map-font-size-slider" oninput="adjustMapFontSize(this.value)" class="h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500 w-24 sm:w-28" title="調整看板全體字體大小">
+                <i class="fa-solid fa-font text-sm"></i>
+            </div>
+
+            <button onclick="downloadFullMap()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white font-extrabold text-sm px-6 py-3 rounded-lg flex items-center gap-2 transition-all shadow-md shadow-amber-500/20 whitespace-nowrap">
+                <i class="fa-solid fa-file-image"></i>
+                下載整張完整旅程圖 (JPG)
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MAIN JOURNEY MAP CONTAINER (MAP TO CAPTURE) -->
+    <!-- ========================================== -->
+    <div id="full-journey-canvas" class="w-full max-w-[3800px] mx-auto bg-[#F7F7F7] border border-mapBorder rounded-lg shadow-xl overflow-hidden">
+        
+        <!-- ========================================== -->
+        <!-- ROW 1: USER PROFILE (用戶基本資料) -->
+        <!-- ========================================== -->
+        <div class="flex border-b border-mapBorder bg-white">
+            <!-- Pinned Left Header block -->
+            <div class="w-[180px] flex-shrink-0 bg-mapYellow flex items-center justify-center font-bold text-xl border-r border-mapBorder text-slate-800">
+                用戶
+            </div>
+            
+            <!-- Right Content Area -->
+            <div class="flex-1 flex flex-col lg:flex-row items-stretch p-4 gap-6">
+                
+                <!-- Left Area: Avatar & Biography -->
+                <div class="flex-1 flex flex-row items-center gap-6 min-w-[500px]">
+                    <div class="flex-shrink-0 flex items-center justify-center pl-4">
+                        <div id="user-avatar" class="w-20 h-20 rounded-full border-2 border-slate-300 flex items-center justify-center bg-slate-100 text-4xl shadow-inner">
+                            👨‍💻
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex flex-col justify-center gap-3">
+                        <!-- Name and Pills -->
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <span id="user-name" class="text-3xl font-black text-slate-800 whitespace-nowrap">劉先生</span>
+                            <span id="pill-gender" class="bg-slate-100 border border-slate-200 text-sm px-3.5 py-1.5 rounded-full text-slate-700 font-bold whitespace-nowrap">男性</span>
+                            <span id="pill-age" class="bg-slate-100 border border-slate-200 text-sm px-3.5 py-1.5 rounded-full text-slate-700 font-bold whitespace-nowrap">38歲</span>
+                            <span id="pill-job" class="bg-slate-100 border border-slate-200 text-sm px-3.5 py-1.5 rounded-full text-slate-700 font-bold whitespace-nowrap">技術業</span>
+                        </div>
+
+                        <!-- Meta info -->
+                        <div class="flex flex-wrap items-center gap-x-8 gap-y-2 text-base">
+                            <div class="flex items-center gap-1.5 whitespace-nowrap">
+                                <span class="text-slate-400 font-bold">投資年齡：</span>
+                                <span id="meta-invest-age" class="font-extrabold text-slate-800">10 年</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 whitespace-nowrap">
+                                <span id="meta-trade-scale-label" class="text-slate-400 font-bold">交易規模：</span>
+                                <span id="meta-trade-scale" class="font-extrabold text-slate-800">300 - 500萬</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 whitespace-nowrap">
+                                <span class="text-slate-400 font-bold">家庭狀況：</span>
+                                <span id="meta-family" class="font-extrabold text-slate-800">未婚</span>
+                            </div>
+                        </div>
+
+                        <!-- User quote -->
+                        <div class="bg-[#FFFEEB] border border-mapYellow p-3 rounded-lg max-w-[850px]">
+                            <span id="user-quote-title" class="text-sm font-bold text-amber-600 block mb-1">使用者心聲：</span>
+                            <p id="user-quote" class="text-sm font-medium italic text-slate-700 leading-normal">
+                                「有種餓叫 MaMa 覺得我餓，總覽只要我想看的（盤前查播、大戶+散戶大小單、盤中盯盤、帳務）」
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Separator -->
+                <div class="hidden lg:block w-px bg-slate-200"></div>
+
+                <!-- Right Area: RFM+L cohort selection (右上角 - 無邊框背景) -->
+                <div class="w-[340px] flex-shrink-0 flex flex-col justify-center gap-2 pr-4 py-2">
+                    <span class="text-xs font-black text-amber-600 uppercase tracking-widest block mb-2">
+                        <i class="fa-solid fa-tags mr-1"></i> RFM + L 用戶分群篩選
+                    </span>
+                    <div id="rfm-container" class="grid grid-cols-1 gap-1 text-xs">
+                        <!-- Dynamic RFM Rows -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SCROLLABLE TABLE CANVAS (附帶浮動導航左右點擊與往右滑動暗示) -->
+        <!-- ========================================================= -->
+        <div class="relative w-full overflow-hidden">
+            
+            <!-- Floating Left Arrow Button -->
+            <button id="scroll-btn-left" onclick="scrollJourney('left')" class="no-print absolute left-2 top-[320px] w-12 h-12 rounded-full bg-white/95 border border-slate-300 shadow-xl flex items-center justify-center text-slate-600 hover:text-amber-500 hover:bg-slate-50 active:scale-90 transition-all z-30 opacity-0 pointer-events-none" title="往左滾動">
+                <i class="fa-solid fa-chevron-left text-xl"></i>
+            </button>
+
+            <!-- Floating Right Arrow Button -->
+            <button id="scroll-btn-right" onclick="scrollJourney('right')" class="no-print absolute right-2 top-[320px] w-12 h-12 rounded-full bg-white/95 border border-slate-300 shadow-xl flex items-center justify-center text-slate-600 hover:text-amber-500 hover:bg-slate-50 active:scale-90 transition-all z-30" title="往右滾動">
+                <span class="absolute top-0.5 right-0.5 w-3 h-3 bg-amber-500 rounded-full animate-ping"></span>
+                <span class="absolute top-0.5 right-0.5 w-3 h-3 bg-amber-500 rounded-full"></span>
+                <i class="fa-solid fa-chevron-right text-xl animate-bounce-x"></i>
+            </button>
+
+            <!-- Floating Right Text Tag Hint -->
+            <div id="scroll-text-hint" class="no-print absolute right-16 top-[328px] bg-slate-800/95 text-white text-[11px] font-black py-1.5 px-3 rounded-lg shadow-md z-30 pointer-events-none transition-opacity duration-300 flex items-center gap-1">
+                <span>往右滑動看更多</span>
+                <i class="fa-solid fa-arrow-right animate-bounce-x"></i>
+            </div>
+
+            <!-- Scrollable Table Body -->
+            <div class="overflow-x-auto journey-scroll" id="journey-scroll-viewport">
+                <div id="journey-scroll-content">
+                    <!-- Needs to be sized dynamically by columns count in JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer Description -->
+        <div class="bg-[#FFFCE8] p-4 border-t border-mapBorder flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-base">📌</span>
+                <span>此看板支援多角色切換。註：解決方案點數目 = 投票 (技術可行 + 商業有益 + 使用者需求) 加起來總票數。請使用上方「看板字體」滑軌調整。</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SEPARATE BOTTOM CONTROLLER PANEL (控制面板) -->
+    <!-- ========================================== -->
+    <div class="no-print w-full max-w-[3800px] mx-auto mt-6 bg-white border border-slate-200 p-6 rounded-xl shadow-sm" id="control-panel-container"></div>
+
+    <!-- NATIVE INSTANT SCRIPT (No compile, fully native and bulletproof) -->
+    <script>
+        // --- 0. GLOBAL STATE & UTILITIES HOISTED TO ABSOLUTE TOP OF RUNTIME ---
+        let currentRole = "liu"; // HOISTED TO TOP
+        let stages = [];         // HOISTED TO TOP
+
+        function getEmoji(score) {
+            if (score <= 3) return "😟";
+            if (score <= 6) return "😐";
+            return "😊";
+        }
+
+        const columnWidth = 230; // Shrunk to 230
+        const height = 180;
+
+        // --- 1. USER ROLE DEFINITIONS (第 4 組廖先生 5x11 幾何矩陣痛點與解決方案 100% 精準覆寫修正) ---
+        const roles = {
+            liu: {
+                avatar: "👨‍💻",
+                name: "劉先生",
+                gender: "男性",
+                age: "38歲",
+                job: "技術業",
+                investAge: "10 年",
+                tradeScaleLabel: "交易規模：",
+                tradeScale: "300 - 500萬",
+                family: "未婚",
+                quote: "「有種餓叫 MaMa 覺得我餓，總覽只要我想看的（盤前查播、大戶+散戶大小單、盤中盯盤、帳務）」",
+                rfm: {
+                    r: "近 0 - 7 天內登入",
+                    f: "近 30 天登入 &gt; 15 次",
+                    m: "交易市值 &gt; 200 萬 TWD",
+                    l: "資料未選取"
+                },
+                stages: [
+                    { id: 1, need: "昨日美股漲跌指數，市場早報", purpose: "看盤，了解市場資訊，找今日當沖標的", nodes: ["指數數據", "昨日美股收盤", "選股關建"], score: 3, title: "字太小，名詞難懂", pains: ["字體太小，閱讀疲勞", "專業金融名詞難懂、進入門檻高"], gains: ["優化命名用詞使其通俗易懂，幫助順利抵達目的服務", "提供自定義字體大小選項"], solutions: [{ desc: "調整適切的字體or自定義大小與名詞命名易懂", votes: 11 }] },
+                    { id: 2, need: "自己當日買賣額度目前融資額度", purpose: "了解自己委託金額，避免下單失敗", nodes: ["盤點金額"], score: 4, title: "版面複雜、找不到功能", pains: ["找不到功能入口", "整體版面 Layout 複雜", "預設打開 app 導向總覽，而非自選或庫存"], gains: ["利用版面簡潔安排，幫助客戶直覺找到導航功能", "彈性自訂預設開啟 app 的 tab 順序，便利直接查看庫存或自選"], solutions: [{ desc: "可自定義總覽區塊與排列順序", votes: 18 }, { desc: "彈性預設開啟 APP tab 順序（自定義 tab 位置）", votes: 9 }] },
+                    { id: 3, need: "前往通知中心", purpose: "看昨晚美股成交委託，交割帳戶，確認狀態", nodes: ["成交回狀態", "金額", "交割帳戶夠嗎"], score: 5, title: "功能全靠搜尋", pains: ["許多功能必須手動用搜尋的", "缺乏清楚且好搜尋的操作手冊", "找不到就問營業員"], gains: ["幫助客戶更順暢「搜尋」功能或服務使用，外加直觀的操作說明"], solutions: [{ desc: "新增搜尋「功能」的功能(如功能使用&常見問題）", votes: 16 }] },
+                    { id: 4, need: "收到申購通知推播", purpose: "申購資訊、資產、價位", nodes: ["價差", "時間", "錢"], score: 3, title: "不知如何操作", pains: ["收到通知後，仍不知如何進行後續使用"], gains: ["整合全公司常見問題（FAQ），讓同仁及客戶均能快速獲得解答"], solutions: [{ desc: "建立更多原生服務（常用）ex: 豐存股、圈存", votes: 17 }] },
+                    { id: 5, need: "收到新開推播", purpose: "抽籤賺價差", nodes: ["智慧申購設定", "申購便利通", "立即申購"], score: 6, title: "自動圈存便利性", pains: ["希望能有更便捷的自動化圈存服務"], gains: ["降低客戶手動圈存動作，改為自動圈存提升效率並減少客訴"], solutions: [{ desc: "開發自動圈存服務（如現行調額）", votes: 4 }] },
+                    { id: 6, need: "去股票申購", purpose: "閱覽文章", nodes: ["關鍵事件", "關鍵股號"], score: 7, title: "流程基本順暢", pains: [], gains: [], solutions: [] },
+                    { id: 7, need: "收到法動推播", purpose: "想看抽獎資訊", nodes: ["任務資訊", "如何抽"], score: 5, title: "功能板塊不支援自訂", pains: ["總覽區塊及功能不支援自訂"], gains: ["根據客戶使用習慣自訂功能排序，符合需求且好上手"], solutions: [] },
+                    { id: 8, need: "前往活動入口頁面", purpose: "參加活動了解如何獲獎", nodes: ["清楚的資訊", "流暢簽署"], score: 8, title: "活動指引清晰", pains: [], gains: [], solutions: [] },
+                    { id: 9, need: "下單失效要簽署ASK營業員", purpose: "只簽署該文件", nodes: ["活動的狀態", "達成難易度與狀態"], score: 7, title: "文件簽署引導", pains: [], gains: [], solutions: [] },
+                    { id: 10, need: "收到庫存日報看到雷達標示", purpose: "看庫存及雷達貼標", nodes: ["雷達", "策略"], score: 6, title: "主動警示不足", pains: ["雷達可增加觸發主動式通知功能", "希望能自由設定學習及行銷活動通知的開啟或關閉"], gains: ["利用策略訊號主動通知客戶，提升交易動機並有效管理風險"], solutions: [{ desc: "雷達&到價主動通知功能", votes: 16 }] },
+                    { id: 11, need: "注意股警示股下單失敗ASK營業員", purpose: "圈存，預收款券", nodes: ["圈存款", "圈存股票"], score: 2, title: "失敗原因標示不清", pains: ["下單失敗的通知資訊不足，原因寫得不夠清楚、看不懂"], gains: ["給予充足通知與清楚的彙整資訊，讓客戶安心下單或進行補款圈存服務"], solutions: [{ desc: "完備委回失敗通知原因＋引導排除", votes: 5 }] },
+                    { id: 12, need: "確認有無成功", purpose: "確認申購、簽署、圈存活動有無成功", nodes: ["完成狀態或進度清楚"], score: 8, title: "期望有原生整合", pains: ["期望減少跨平台的服務斷點"], gains: ["將跨平台服務減少斷點，建立原生系統（如整合憑證下載、豐存股等流程）"], solutions: [] }
+                ]
+            },
+            
+            chou: {
+                avatar: "👩‍💼",
+                name: "周夫人",
+                gender: "女性",
+                age: "60歲",
+                job: "實業家",
+                investAge: "30-40年",
+                tradeScaleLabel: "可投資資產：",
+                tradeScale: "1 億元",
+                family: "一家之主",
+                quote: "「簡易直觀下單操作介面」",
+                rfm: {
+                    r: "近 8 - 30 天內登入",
+                    f: "近 30 天登入 4 - 15 次",
+                    m: "交易市值 &gt; 200 萬 TWD",
+                    l: "首次登入距今 366天 - 3年"
+                },
+                stages: [
+                    { id: 1, need: "想了解庫存損益", purpose: "昨日海外市場狀況", nodes: ["台指期漲跌點數", "日、韓開盤狀況", "美股熱門股"], score: 4, title: "字太小", pains: ["字太小"], gains: ["沒有教學介面", "可自行調整字體大小"], solutions: [] },
+                    { id: 2, need: "登入 APP", purpose: "通過身分認證", nodes: ["生物辨識", "密碼登入", "帳號選擇"], score: 6, title: "首頁無法自由客製化", pains: ["讓使用者可以自由選擇哪一個頁面當首頁"], gains: ["自訂想要的介面"], solutions: [{ desc: "頁面搜尋關鍵字", votes: 20 }, { desc: "排除FAQ，增加常用熱門功能、客製化區、優化路徑", votes: 0 }, { desc: "自動化依使用習慣幫客戶建首頁捷徑", votes: 0 }, { desc: "畫面更直觀，將重點常用項目改為'頁籤'方式呈現，減少返回次數", votes: 0 }, { desc: "版面訂閱制可分享", votes: 0 }] },
+                    { id: 3, need: "查看總庫存、損益、成交回報", purpose: "資產總覽", nodes: ["產品投資組合", "市場別賺賠", "幣別餘額"], score: 3, title: "首頁資訊量太大了", pains: ["首頁資訊量太大"], gains: ["複委託選股標的、選股功能"], solutions: [{ desc: "選股訂閱制", votes: 5 }] },
+                    { id: 4, need: "前往個股資訊", purpose: "了解個股表現漲跌", nodes: ["個股損益", "個股成本", "個股股數"], score: 7, title: "跳轉基本順暢", pains: [], gains: ["簡化點選步驟"], solutions: [] },
+                    { id: 5, need: "預收款券、圈存警示股", purpose: "交易需求買賣圈存", nodes: ["銀行餘額", "庫存股數"], score: 3, title: "憑證申請繁複", pains: ["好多憑證要申請"], gains: ["選股路徑優化"], solutions: [{ desc: "處置股買進系統自動從銀行圈錢、賣出可以自動圈股票（現行需自行設定）", votes: 16 }] },
+                    { id: 6, need: "主動式 ETF 買什麼", purpose: "知道經理人操作方向", nodes: ["哪檔ETF標的(增減)金額", "折溢價盤況", "族群分布"], score: 4, title: "自選加入很麻煩", pains: ["標的的加自選麻煩"], gains: ["同產業個股連結(路徑)", "標的好找"], solutions: [{ desc: "批次增減自選標的", votes: 3 }] },
+                    { id: 7, need: "看一下盤中熱門，漲跌幅排行看資金流向", purpose: "查看本日趨勢及熱門產業強勢股", nodes: ["依不同指標進行分類的排行", "跳轉個股頁面", "熱門標的排行技術分析"], score: 7, title: "排行實用性佳", pains: [], gains: ["賺賠損益走勢圖"], solutions: [{ desc: "選股提供回測結果、勝率與操作週期", votes: 3 }] },
+                    { id: 8, need: "財經行事曆", purpose: "確認法說會時間及營收公布日期", nodes: ["個股業績展望說明會議", "本周個股法說", "法說盈收公佈除權息日期"], score: 8, title: "日曆資訊詳實", pains: [], gains: [], solutions: [] },
+                    { id: 9, need: "委託下單", purpose: "成交想買賣標的", nodes: ["改類別改帳", "查看成交回報", "當沖回報、當沖損益"], score: 3, title: "美股下單缺少關鍵資訊", pains: ["美股下單介面沒有'下單可用金額'", "美股下單介面不能直接選擇'台幣交割'或'外幣交割'"], gains: ["美股下單介面可以直接選擇想用的幣別'台幣交割'或'外幣交割'", "美股下單介面有'下單可用金額'顯示", "交易(下單)及庫存還有帳務可以用頁籤切換，不用在返回上一畫面"], solutions: [{ desc: "複委託下單：可以自行再下單頁面選擇「台幣交割」、「外幣交割」", votes: 12 }, { desc: "複委託下單頁面「可用下單金額」資訊，避免重複回到帳務畫面確認帳務", votes: 2 }, { desc: "加強引導頁籤整理", votes: 0 }] },
+                    { id: 10, need: "當日交割款", purpose: "足額交額資金調度", nodes: ["帳務銀行餘額", "資金管理帳戶出入金", "T+5日借貸申請"], score: 6, title: "警告缺少排除導引", pains: [], gains: ["跳出錯誤訊息後，引導客戶解決"], solutions: [] },
+                    { id: 11, need: "查看盤後資訊", purpose: "和朋友分享資訊損益", nodes: ["資訊是否清楚跟正確"], score: 8, title: "對帳單分享完整", pains: [], gains: [], solutions: [] }
+                ]
+            },
+
+            tsai: {
+                avatar: "👩‍🍳",
+                name: "蔡媽媽",
+                gender: "女性",
+                age: "40-50歲",
+                job: "全職家管",
+                investAge: "10 年以上",
+                tradeScaleLabel: "庫存市值：",
+                tradeScale: "600 - 700萬",
+                family: "已婚 (已育)",
+                quote: "「告訴我今天做什麼？」",
+                rfm: {
+                    r: "近 0 - 7 天內登入",
+                    f: "近 30 天登入 &gt; 15 次",
+                    m: "交易量市值 &gt; 200 萬",
+                    l: "首次登入至今 &gt; 3 年"
+                },
+                stages: [
+                    { id: 1, need: "想了解庫存持股行情", purpose: "是否要換股", nodes: ["損益", "關鍵價到價", "自選股"], score: 4, title: "長短線混淆", pains: ["不知道做長/短", "UI介面調整需求", "字體太小"], gains: ["字體放大功能", "直覺易用的UI畫面調整"], solutions: [{ desc: "字體放大", votes: 19 }, { desc: "列出每日焦點強勢族群之個股", votes: 1 }] },
+                    { id: 2, need: "盤前看籌碼整理/排行", purpose: "想獲得熱門股資訊（短多、籌碼等）", nodes: ["週期多分析"], score: 5, title: "盼望提供主流族群", pains: ["想看目前的主流族群"], gains: ["支援二階段排序功能"], solutions: [{ desc: "盤中提供短多、精選個股，並提供相關資訊成交量、周轉排行等", votes: 1 }] },
+                    { id: 3, need: "總覽直接呈現相關資訊", purpose: "快速找到可交易的個股", nodes: ["個股結果", "可加自選", "一鍵下單"], score: 3, title: "容易產生選擇障礙", pains: ["選擇障礙", "找不到功能", "建立更多常用原生服務"], gains: ["直列族群＆相關個股呈現方式"], solutions: [{ desc: "自選股勾選：可以從智慧選股一次多選加入自選", votes: 9 }, { desc: "一鍵加自選、多檔同時加自選", votes: 6 }, { desc: "設定自選呈現資訊欄位且可匯出匯入", votes: 3 }] },
+                    { id: 4, need: "盤中交易診斷", purpose: "了解產業關鍵排行、資金投入", nodes: ["自己歸納族群", "個股->族群->選股"], score: 4, title: "對自動化策略欠缺信任", pains: ["不信任自動化策略", "找不到操作方式只好問營業員"], gains: ["如何給予直列族群與相關個股，降低點選步驟"], solutions: [{ desc: "細節產業清單", votes: 15 }, { desc: "二階段篩選", votes: 11 }, { desc: "截圖加自選", votes: 11 }] },
+                    { id: 5, need: "盤中跟單推薦", purpose: "找到資金流入轉強的標的", nodes: ["找到資金流入轉強標的"], score: 3, title: "選股多不知道怎麼用", pains: ["選股與清單很多，但不知道怎麼使用", "想知道市場當前正在討論什麼"], gains: ["快速找到熱門消息一鍵跟單"], solutions: [{ desc: "跟單", votes: 29 }] },
+                    { id: 6, need: "盤後：籌碼整理", purpose: "做功課整理隔天可交易的個股", nodes: ["資訊清楚（籌碼/營收）"], score: 6, title: "希望有清晰市場話題整理", pains: ["想知道市場在討論什麼"], gains: ["籌碼整理及到價通知連動"], solutions: [{ desc: "調整畫面自訂排序", votes: 6 }, { desc: "報價排序：成交價、漲跌%", votes: 4 }] }
+                ]
+            },
+
+            chuang: {
+                avatar: "🚀",
+                name: "莊小錢",
+                gender: "男性",
+                age: "30歲",
+                job: "科技業",
+                investAge: "10 年",
+                tradeScaleLabel: "股票持量：",
+                tradeScale: "5000萬",
+                family: "已婚",
+                quote: "「我要大投讓能我快速賺$，我要在大安區買房！」",
+                quoteTitle: "Persona 類型：中短期 科技業 高話語",
+                rfm: {
+                    r: "近 0 - 7 天內登入",
+                    f: "近 30 天登入 &gt; 15 次",
+                    m: "交易量市值 &gt; 200 萬 TWD",
+                    l: "首次登入距今 366 天 - 3 年"
+                },
+                stages: [
+                    { id: 1, need: "登入大戶投 APP", purpose: "登入驗證", nodes: ["生物辨識", "快速登入"], score: 4, title: "憑證重登痛點", pains: ["外開還會需要重新登入憑證"], gains: [], solutions: [] },
+                    { id: 2, need: "想了解出借資訊", purpose: "想將持有存股進行出借", nodes: ["費率", "可出借股數", "預估報酬"], score: 5, title: "資訊不易找到", pains: ["不易找到相關資訊"], gains: [], solutions: [] },
+                    { id: 3, need: "查詢哪邊可以加開/出借", purpose: "找到加開借券位置", nodes: ["功能分類", "開戶專區", "篩選分類"], score: 7, title: "尋找功能路徑", pains: [], gains: [], solutions: [] },
+                    { id: 4, need: "前往加開頁面", purpose: "準備開戶文件", nodes: ["申請文件", "說明", "提示清楚"], score: 8, title: "提示清晰度佳", pains: [], gains: [], solutions: [] },
+                    { id: 5, need: "申請階段", purpose: "開戶申請", nodes: ["快速", "簡單", "明確"], score: 8, title: "申請流暢快速", pains: [], gains: [], solutions: [] },
+                    { id: 6, need: "開戶進度", purpose: "進度查詢", nodes: ["營業員 TEL", "狀態", "何時生效"], score: 4, title: "進度資訊單調", pains: ["加開進度查詢", "畫面只有加開沒其他資訊"], gains: ["一頁式查詢加開進度"], solutions: [] },
+                    { id: 7, need: "出借申請", purpose: "可以去哪出借", nodes: ["引導明確", "問題 QA", "限制"], score: 7, title: "出借資格說明", pains: [], gains: [], solutions: [] },
+                    { id: 8, need: "報酬社群分享", purpose: "分享給好友", nodes: ["查無此功能", "支援平台(社群)"], score: 8, title: "期待有直接分享機制", pains: [], gains: [], solutions: [] },
+                    { id: 9, need: "戶籍 or 職業變更", purpose: "變更基本資料", nodes: ["功能查找"], score: 3, title: "職業戶籍無法線上變更", pains: ["基本資料修改 證券、財管無法線上變更職業", "戶籍地不能線上變更"], gains: ["請資訊部綜合評估，直接將欄位加上去"], solutions: [] },
+                    { id: 10, need: "下單額度不足", purpose: "想下單高價股", nodes: ["可用剩餘額", "交易額度"], score: 6, title: "下高價股限額", pains: ["線上只能隔日生效"], gains: ["委託額度達使用額度80%，系統主動調額"], solutions: [{ desc: "線上授信調整", votes: 24 }, { desc: "線上調額立即生效", votes: 13 }, { desc: "授信加開三合一", votes: 8 }] },
+                    { id: 11, need: "線上調整 or 打給營業員", purpose: "提升額度", nodes: ["調整額度生效"], score: 4, title: "線上隔日生效痛點", pains: ["線上只能隔日生效"], gains: [], solutions: [] },
+                    { id: 12, need: "線上客戶想要營業員服務", purpose: "降低手續費", nodes: ["營業員是誰", "電話號碼"], score: 5, title: "高波動期營業員難聯絡", pains: ["遇到市場波動較大時，客戶無法馬上找到專員"], gains: [], solutions: [] },
+                    { id: 13, need: "匯撥股票到營業員分公司", purpose: "找到匯撥功能", nodes: ["加開", "匯撥"], score: 3, title: "找不到匯撥功能", pains: [], gains: [], solutions: [] },
+                    { id: 14, need: "警示股交易 -> 款項圈存", purpose: "買賣警示股", nodes: ["圈存狀態", "圈存金額"], score: 2, title: "下單失敗只有冰冷錯誤", pains: ["警示股下單只有錯誤訊息", "警示股引導預圈"], gains: ["引導預收款券", "顯示已圈/未圈金額", "下單前要提醒圈存/簽署"], solutions: [{ desc: "下單匣上方會有提示", votes: 10 }, { desc: "如何讓想下警示股客戶有更好引導 and 更方便下單及了解圈存金額", votes: 4 }] },
+                    { id: 15, need: "電子投票", purpose: "股東 e 服務", nodes: ["投票"], score: 4, title: "投票功能難找", pains: ["找不到功能"], gains: ["找到捷徑預設「釘選」最上方"], solutions: [{ desc: "商品搜尋多 1 頁籤為「功能」，可以直接找到想要的功能", votes: 11 }] },
+                    { id: 16, need: "打算變更對帳單收取方式", purpose: "更容易掌握對帳單的資訊", nodes: ["改新email", "郵寄紙本", "改成郵政信箱"], score: 7, title: "對帳單設定", pains: [], gains: [], solutions: [{ desc: "商品搜尋多 1 頁籤為「功能」，可以直接找到想要的功能", votes: 11 }] },
+                    { id: 17, need: "存股賺多少", purpose: "了解成本費用", nodes: ["手續費", "成本", "賣出獲利"], score: 8, title: "損益與手續費透明", pains: [], gains: [], solutions: [{ desc: "商品搜尋多 1 頁籤為「功能」，可以直接找到想要的功能", votes: 11 }, { desc: "特定時節用戶常用功能 SHOW 在上方(股東e服務)", votes: 0 }] },
+                    { id: 18, need: "怎麼存股", purpose: "存股要買哪檔", nodes: ["存股排行", "高殖利率", "科技股"], score: 4, title: "存股必須跳轉網頁", pains: ["存股要開網頁"], gains: ["不知道豐存股是什麼"], solutions: [{ desc: "下單直接下存股", votes: 9 }, { desc: "豐存股更名定期定額", votes: 0 }] },
+                    { id: 19, need: "存股如何買賣", purpose: "今天如何設定買進", nodes: ["選擇帳號", "選擇標的", "選擇價格、股數"], score: 7, title: "定期定額設定流程", pains: ["存股找不到/不好找約定路徑"], gains: [], solutions: [] },
+                    { id: 20, need: "我做了哪些存股操作", purpose: "約定跟帳戶資訊", nodes: ["圈存金額", "餘額", "交割帳號"], score: 8, title: "掌握約定進度", pains: [], gains: [], solutions: [] },
+                    { id: 21, need: "買賣台股、美股＆相關正反 ETF", purpose: "買正2 or 反1\n主動告知需符合資格：10 筆權證、10 筆期貨、加開信用", nodes: ["簽署指數股票型 ETF", "簽署槓桿反向期貨 ETF", "加開交易條件、信用戶、期貨、權證"], score: 3, title: "找不到對應簽署文件", pains: ["找不到對應的簽署文件", "信用＋不限不能一起開", "分天加開申請同一份財力評估會有差異"], gains: [], solutions: [{ desc: "如何讓用戶清楚了解加開張戶的狀態 or 開戶進度，並在同一畫面呈現", votes: 3 }] },
+                    { id: 22, need: "提高維持率、降低利率", purpose: "不限：利率調高、想換擔保品", nodes: ["變更擔保品"], score: 6, title: "授信維持率調撥", pains: ["簽署數量太多搞不清楚"], gains: ["加開進度查詢各自分開"], solutions: [] },
+                    { id: 23, need: "授信額度調整", purpose: "信用及不限皆須使用", nodes: ["信用額度", "不限額度"], score: 2, title: "授信額度無法線上調", pains: ["授信額度不能線上調整"], gains: [], solutions: [] }
+                ]
+            },
+
+            liao: {
+                avatar: "🛡️",
+                name: "廖先生",
+                gender: "男性",
+                age: "35歲",
+                job: "科技上班族",
+                investAge: "5 年",
+                tradeScaleLabel: "庫存規模：",
+                tradeScale: "300 - 500萬",
+                family: "已婚 (育一子)",
+                quote: "「功能太多了吧！給我最簡單的方式，不會再迷路了」",
+                quoteTitle: "Persona 類型：投資新手，小額投資",
+                rfm: {
+                    r: "近 0 - 7 天內登入",
+                    f: "近 30 天登入 &gt; 15 次",
+                    m: "交易量市值 &gt; 200 萬",
+                    l: "首次登入至今 ≤ 90 天"
+                },
+                stages: [
+                    {
+                        id: 1,
+                        need: "用戶進入帳務（台股）",
+                        purpose: "客戶想要看銀行餘額和購買力",
+                        nodes: ["台股帳務庫存", "銀行餘額剩多少", "交割款什麼時候"],
+                        score: 3,
+                        title: "損益難找、時間太短",
+                        pains: [
+                            "找不到損益、歷史損益能查詢時間太短、載入時間過長",
+                            "資訊過多難找到想要的、介面缺乏說明、導航不清楚",
+                            "APP 頁面期望能提供更清爽的白底模式",
+                            "帳務太長，需要點多次才能看到(功能需一目瞭然)"
+                        ],
+                        gains: [
+                            "如何讓客戶在總覽第一頁就能直覺看到：1.台股帳務 2.銀行餘額 3.交割款項",
+                            "帳務太長，需要點多次才能看到(功能需一目瞭然)"
+                        ],
+                        solutions: [
+                            { desc: "讓處置股下單更流暢", votes: 19 },
+                            { desc: "在委託明細中如遇到需預收款券，直接導引功能", votes: 8 },
+                            { desc: "首頁放 90% 的人要用的功能", votes: 4 }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        need: "用戶進入選股查看盤中熱門 or 個股詳情",
+                        purpose: "使用者想下單台股",
+                        nodes: ["自選", "交易", "帳務、庫存"],
+                        score: 4,
+                        title: "忘記預收款券痛點",
+                        pains: ["下單時才發現處置股需要先去做預收款券"],
+                        gains: [],
+                        solutions: [
+                            { desc: "指引用戶使用外部瀏覽器使用網頁（非 line, fb 內建的網頁）", votes: 4 },
+                            { desc: "UI 上可以有畫面提醒說明", votes: 2 }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        need: "用戶進入選股查看盤中熱門 or 個股詳情",
+                        purpose: "客戶想買正二、反一",
+                        nodes: ["需先開立信用戶"],
+                        score: 5,
+                        title: "委回錯誤訊息容易誤導",
+                        pains: [], 
+                        gains: ["如何引導客戶建立信用戶", "槓桿商品也需要開信用戶"],
+                        solutions: []
+                    },
+                    {
+                        id: 4,
+                        need: "客戶進入大戶投總覽，豐存股網頁（台股）",
+                        purpose: "客戶想要賣庫存（台股、豐存股）",
+                        nodes: ["未實現損益", "綜合損益", "帳務庫存"],
+                        score: 3,
+                        title: "定期定額與存股認知模糊",
+                        pains: [
+                            "豐存台股 = 定期定額有疑問",
+                            "豐存股找不到「股利再投入」的個股列表",
+                            "客戶不知道如何設定總覽捷徑、不會操作"
+                        ], 
+                        gains: ["支援內建額度調整功能"],
+                        solutions: [
+                            { desc: "讓豐存股庫存以原生的方式放在大戶投裡，可用原生大戶投賣出（但手續費不一樣）", votes: 21 },
+                            { desc: "建立雲端自選（iLeader, Newweb 大戶投）", votes: 12 },
+                            { desc: "在豐存台股庫存列表中註記(Tag 0 or 1)哪一檔個股有設「股利再投入」", votes: 8 },
+                            { desc: "在台股庫存列表中 if 有股利再投入，明細裡可 trust 到豐存股網頁設定", votes: 0 }
+                        ]
+                    },
+                    {
+                        id: 5,
+                        need: "客戶進入大戶投總覽，豐存股網頁（美股）",
+                        purpose: "客戶想要賣庫存（美股、豐存股）",
+                        nodes: [],
+                        score: 3,
+                        title: "美股存股看不見庫存",
+                        pains: [
+                            "美股豐存股目前在大戶投帳務看不到庫存（分開的）",
+                            "豐存股為什麼要另外開 web",
+                            "手續費不同"
+                        ],
+                        gains: ["大戶投定期定額增加跨日長效單等選項（ex: 複委託長效單）"],
+                        solutions: [
+                            { desc: "在豐存股網頁庫存加入「賣出」按鍵。1. Trust 進入大戶投APP、2.web原生賣出", votes: 5 }
+                        ]
+                    },
+                    {
+                        id: 6,
+                        need: "用戶去找服務相關功能（預收款券）",
+                        purpose: "用預收款券、用存券匯撥",
+                        nodes: ["去小人頭找", "去帳務找"],
+                        score: 2,
+                        title: "服務功能路徑不清",
+                        pains: [
+                            "找不到想要的功能、介面雜亂，版面 Layout 排版太複雜",
+                            "沒有加開財富管理、複委託的功能",
+                            "匯撥股票流程教學"
+                        ],
+                        gains: ["如何讓客戶更快速、直覺地找到預收款券 and 匯撥等常用功能"],
+                        solutions: [
+                            { desc: "所有申請在一個頁面能完成", votes: 8 }
+                        ]
+                    },
+                    {
+                        id: 7,
+                        need: "iLeader 自選",
+                        purpose: "iLeader 自選和大戶投不同步",
+                        nodes: [],
+                        score: 3,
+                        title: "自選同步與憑證障礙",
+                        pains: [
+                            "自選股找不到"
+                        ],
+                        gains: [],
+                        solutions: [
+                            { desc: "建立雲端自選（iLeader, Newweb 大戶投）整合資訊", votes: 12 },
+                            { desc: "建立雲端自選（iLeader, Newweb 大戶投）", votes: 12 },
+                            { desc: "編輯總攬版面(自訂功能)", votes: 0 }
+                        ]
+                    },
+                    {
+                        id: 8,
+                        need: "申請憑證引導",
+                        purpose: "",
+                        nodes: [],
+                        score: 4,
+                        title: "憑證載入中斷",
+                        pains: [
+                            "網頁端常會遇到憑證載入障礙，需消除複雜斷點：大戶投 -> Web"
+                        ],
+                        gains: [],
+                        solutions: []
+                    },
+                    {
+                        id: 9,
+                        need: "優化智慧單 全市場下單",
+                        purpose: "",
+                        nodes: ["已觸發", "未觸發", "編輯/重送"],
+                        score: 4,
+                        title: "智慧單商品無自選/庫存",
+                        pains: [
+                            "台股智慧單選商品時，無法直接帶入庫存或自選清單",
+                            "智慧單溝通名詞與說明不一致，造成新手學習門檻",
+                            "美股與台股智慧單操作位置、功能設置不同"
+                        ],
+                        gains: [
+                            "編輯總覽版面，自訂功能按鈕與進行名詞整合",
+                            "需要主動發出「警示提醒通知」"
+                        ],
+                        solutions: []
+                    },
+                    {
+                        id: 10,
+                        need: "複委託",
+                        purpose: "客戶想要複委託",
+                        nodes: [],
+                        score: 5,
+                        title: "複委託體驗有待優化",
+                        pains: [],
+                        gains: [],
+                        solutions: [
+                            { desc: "複委託改單能增改價功能", votes: 0 },
+                            { desc: "美股閃電下單", votes: 0 }
+                        ]
+                    },
+                    {
+                        id: 11,
+                        need: "閃電下單",
+                        purpose: "",
+                        nodes: [],
+                        score: 4,
+                        title: "閃電下單反應慢",
+                        pains: [
+                            "閃電下單反應速度太慢",
+                            "閃電下單介面不夠直白"
+                        ],
+                        gains: [],
+                        solutions: []
+                    }
+                ]
+            }
+        };
+
+        // Initialize stages data safely based on current hoisted role
+        stages = JSON.parse(JSON.stringify(roles[currentRole].stages));
+
+        // --- 3. SWITCH ROLE FUNCTION (動態切換) ---
+        function switchRole(roleId) {
+            if (roleId === currentRole) return;
+            currentRole = roleId;
+            stages = JSON.parse(JSON.stringify(roles[currentRole].stages));
+
+            // Toggle Button styling classes (Enlarged button classes!)
+            const btnLiu = document.getElementById('btn-role-liu');
+            const btnChou = document.getElementById('btn-role-chou');
+            const btnTsai = document.getElementById('btn-role-tsai');
+            const btnChuang = document.getElementById('btn-role-chuang');
+            const btnLiao = document.getElementById('btn-role-liao');
+            
+            // Default styling reset (px-5 py-3 text-sm)
+            const defaultClass = "px-5 py-3 rounded-lg text-sm font-black transition-all text-slate-500 hover:text-slate-800";
+            const activeClass = "px-5 py-3 rounded-lg text-sm font-black transition-all bg-white text-slate-800 shadow-sm border border-slate-200";
+            
+            btnLiu.className = defaultClass;
+            btnChou.className = defaultClass;
+            btnTsai.className = defaultClass;
+            btnChuang.className = defaultClass;
+            btnLiao.className = defaultClass;
+
+            if (roleId === 'liu') {
+                btnLiu.className = activeClass;
+            } else if (roleId === 'chou') {
+                btnChou.className = activeClass;
+            } else if (roleId === 'tsai') {
+                btnTsai.className = activeClass;
+            } else if (roleId === 'chuang') {
+                btnChuang.className = activeClass;
+            } else if (roleId === 'liao') {
+                btnLiao.className = activeClass;
+            }
+
+            // Load new profile and render map
+            loadUserProfile();
+            initMap();
+        }
+
+        // --- 4. PROFILE RENDERING ---
+        function loadUserProfile() {
+            const data = roles[currentRole];
+            
+            // Avatar and Name
+            document.getElementById('user-avatar').innerText = data.avatar;
+            document.getElementById('user-name').innerText = data.name;
+            
+            // Pills
+            document.getElementById('pill-gender').innerText = data.gender;
+            document.getElementById('pill-age').innerText = data.age;
+            document.getElementById('pill-job').innerText = data.job;
+
+            // Meta info
+            document.getElementById('meta-invest-age').innerText = data.investAge;
+            document.getElementById('meta-trade-scale-label').innerText = data.tradeScaleLabel;
+            document.getElementById('meta-trade-scale').innerText = data.tradeScale;
+            document.getElementById('meta-family').innerText = data.family;
+
+            // Quote and Quote Title
+            document.getElementById('user-quote').innerText = data.quote;
+            if (data.quoteTitle) {
+                document.getElementById('user-quote-title').innerText = data.quoteTitle + "：";
+            } else {
+                document.getElementById('user-quote-title').innerText = "使用者心聲：";
+            }
+
+            // RFM (No border/shadow transparent rendering & Dynamic L hide)
+            const rfmContainer = document.getElementById('rfm-container');
+            const rfm = data.rfm;
+            
+            // Check if L parameter is valid (i.e. not unselected)
+            const hasL = rfm.l && rfm.l !== "資料未選取";
+
+            rfmContainer.innerHTML = `
+                <div class="flex items-center justify-between py-1.5 px-1 border-b border-dashed border-slate-100">
+                    <span class="font-bold text-amber-700">R <span class="text-[9px] font-normal text-slate-400">(近期活躍)</span></span>
+                    <span class="font-bold text-slate-800 text-right">${rfm.r}</span>
+                </div>
+                <div class="flex items-center justify-between py-1.5 px-1 border-b border-dashed border-slate-100">
+                    <span class="font-bold text-amber-700">F <span class="text-[9px] font-normal text-slate-400">(互動頻率)</span></span>
+                    <span class="font-bold text-slate-800 text-right">${rfm.f}</span>
+                </div>
+                <div class="flex items-center justify-between py-1.5 px-1 ${hasL ? 'border-b border-dashed border-slate-100' : ''}">
+                    <span class="font-bold text-amber-700">M <span class="text-[9px] font-normal text-slate-400">(投資規模)</span></span>
+                    <span class="font-bold text-slate-800 text-right">${rfm.m}</span>
+                </div>
+                ${hasL ? `
+                <div class="flex items-center justify-between py-1.5 px-1">
+                    <span class="font-bold text-amber-700">L <span class="text-[9px] font-normal text-slate-400">(生命週期)</span></span>
+                    <span class="font-bold text-slate-800 text-right">${rfm.l}</span>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        // --- 5. INITIALIZE AND BUILD FULL TABULAR MAP ---
+        function initMap() {
+            const columnsCount = stages.length;
+            const fullScrollContent = document.getElementById('journey-scroll-content');
+            const scrollContainer = document.getElementById('journey-scroll-viewport');
+            
+            // Re-establish outer table minimum width dynamically (縮減階段寬度)
+            const minTableWidth = 180 + (columnsCount * columnWidth);
+            fullScrollContent.style.minWidth = `${minTableWidth}px`;
+
+            // Setup inner grid skeleton rows (徹底去除 needs-row、purposes-row、nodes-row 中的高度限制)
+            fullScrollContent.innerHTML = `
+                <!-- --- ROW 2: NEEDS (階段需求) --- -->
+                <div class="flex border-b border-mapBorder" id="needs-row"></div>
+
+                <!-- --- ROW 3: USER PURPOSE (使用者目的) --- -->
+                <div class="flex border-b border-mapBorder" id="purposes-row"></div>
+
+                <!-- --- ROW 4: KEY NODES (頁面三個最重要資訊) --- -->
+                <div class="flex border-b border-mapBorder" id="nodes-row"></div>
+
+                <!-- --- ROW 5: EMOTION GRAPH (情緒) --- -->
+                <div class="flex border-b border-mapBorder bg-white relative">
+                    <div class="w-[180px] flex-shrink-0 bg-white flex items-center justify-center font-bold text-slate-700 border-r border-mapBorder z-10 text-xs">
+                        情緒
+                    </div>
+                    
+                    <!-- SVG Connector Layer -->
+                    <div class="absolute left-[180px] top-0 bottom-0 right-0 pointer-events-none">
+                        <svg class="w-full h-full" style="min-width: ${columnsCount * columnWidth}px;">
+                            <!-- guidelines -->
+                            <line x1="0" y1="20" x2="${columnsCount * columnWidth}" y2="20" stroke="#EFEFEF" stroke-width="1" />
+                            <line x1="0" y1="48" x2="${columnsCount * columnWidth}" y2="48" stroke="#EFEFEF" stroke-width="1" />
+                            <line x1="0" y1="76" x2="${columnsCount * columnWidth}" y2="76" stroke="#EFEFEF" stroke-width="1" />
+                            <line x1="0" y1="104" x2="${columnsCount * columnWidth}" y2="104" stroke="#EFEFEF" stroke-width="1" />
+                            <line x1="0" y1="132" x2="${columnsCount * columnWidth}" y2="132" stroke="#EFEFEF" stroke-width="1" />
+                            <line x1="0" y1="160" x2="${columnsCount * columnWidth}" y2="160" stroke="#EFEFEF" stroke-width="1" />
+
+                            <!-- Area fill under curve -->
+                            <path id="curve-fill" fill="url(#yellowGlow)" class="opacity-10" />
+
+                            <!-- Smooth Gold Path -->
+                            <path id="curve-glow" fill="none" stroke="#FDD835" stroke-width="4" />
+                            <path id="curve-path" fill="none" stroke="#FDD835" stroke-width="4" />
+
+                            <defs>
+                                <linearGradient id="yellowGlow" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#FFF176" />
+                                    <stop offset="100%" stop-color="#FFF176" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+
+                    <!-- Active labels overlay -->
+                    <div class="flex-1 flex" id="emotion-interactive-container" style="height: 180px;"></div>
+                </div>
+
+                <!-- --- ROW 6: PAINS (痛點) --- -->
+                <div class="flex border-b border-mapBorder bg-white" id="pains-row"></div>
+
+                <!-- --- ROW 7: GAINS (機會點) --- -->
+                <div class="flex border-b border-mapBorder bg-[#FFFEFA]" id="gains-row"></div>
+
+                <!-- --- ROW 8: SOLUTION (解決方案) --- -->
+                <div class="flex bg-white" id="solutions-row"></div>
+            `;
+
+            const needsRow = document.getElementById('needs-row');
+            const purposesRow = document.getElementById('purposes-row');
+            const nodesRow = document.getElementById('nodes-row');
+            const interactiveContainer = document.getElementById('emotion-interactive-container');
+            const painsRow = document.getElementById('pains-row');
+            const gainsRow = document.getElementById('gains-row');
+            const solutionsRow = document.getElementById('solutions-row');
+
+            // 1. Needs Header (需求/階段標題) -> text-sm, bold, Auto-Height (完全移除了 h-9 / line-clamp-2 阻擋)
+            needsRow.innerHTML = `
+                <div class="w-[180px] flex-shrink-0 bg-mapYellow flex items-center justify-center font-bold text-slate-800 border-r border-mapBorder py-4 text-sm">需求 (階段)</div>
+                ${stages.map(s => `
+                    <div class="w-[230px] flex-shrink-0 bg-mapYellowLight border-r border-mapBorder text-center py-4 px-3 font-bold text-slate-800 text-sm flex flex-col items-center justify-center leading-normal">
+                        <span class="text-[11px] text-amber-600 mb-1">階段 ${s.id}</span>
+                        <span class="flex items-center justify-center text-center leading-snug">${s.need}</span>
+                    </div>
+                `).join('')}
+            `;
+
+            // 2. Purposes (使用者目的) -> text-sm, bold, Auto-Height (完全移了 h-14 阻擋)
+            purposesRow.innerHTML = `
+                <div class="w-[180px] flex-shrink-0 bg-[#F5F5F5] flex items-center justify-center font-bold text-slate-700 border-r border-mapBorder py-3.5 text-xs">使用者目的</div>
+                ${stages.map(s => `
+                    <div class="w-[230px] flex-shrink-0 bg-[#FCFCFC] border-r border-mapBorder text-center py-4 px-3 text-sm text-slate-700 font-bold flex items-center justify-center leading-relaxed font-sans font-sans">
+                        ${s.purpose}
+                    </div>
+                `).join('')}
+            `;
+
+            // 3. Nodes (頁面三個最重要資訊) -> text-[13px], bold list items, Auto-Height (完全移除了 h-[105px] 阻擋)
+            nodesRow.innerHTML = `
+                <div class="w-[180px] flex-shrink-0 bg-[#EFEFEF] flex items-center justify-center font-bold text-slate-700 border-r border-mapBorder py-3.5 text-xs">頁面三個最重要資訊</div>
+                ${stages.map(s => `
+                    <div class="w-[230px] flex-shrink-0 bg-[#F9F9F9] border-r border-mapBorder p-3.5 text-[13px] text-slate-700 font-bold flex flex-col justify-center">
+                        <ul class="space-y-1">
+                            ${s.nodes.map(node => `
+                                <li class="leading-normal flex items-start gap-1">
+                                    <span class="text-amber-500 flex-shrink-0">•</span>
+                                    <span>${node}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('')}
+            `;
+
+            // 4. Emotion HTML Overlay (PRISTINE)
+            interactiveContainer.innerHTML = stages.map((s, idx) => `
+                <div class="w-[230px] h-full flex-shrink-0 relative flex flex-col justify-between items-center py-4 z-10 border-r border-dashed border-slate-100">
+                    ${idx === 0 ? `
+                        <div class="absolute left-4 top-2 bottom-2 flex flex-col justify-between text-[10px] text-slate-400 font-mono">
+                            <span>10</span>
+                            <span>8</span>
+                            <span>6</span>
+                            <span>4</span>
+                            <span>2</span>
+                            <span>0</span>
+                        </div>
+                    ` : ''}
+
+                    <!-- Core score bubble -->
+                    <div id="score-bubble-${s.id}" class="absolute text-center flex flex-col items-center w-[190px]" style="transition: transform 0.2s ease-out;">
+                        <span class="text-sm font-black text-slate-800 score-val">${s.score}</span>
+                        <span class="text-[10px] text-slate-500 font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full px-2">${s.title}</span>
+                    </div>
+
+                    <!-- Emoji icon -->
+                    <div id="emoji-${s.id}" class="absolute text-2xl" style="transition: transform 0.2s ease-out;">${getEmoji(s.score)}</div>
+                </div>
+            `).join('');
+
+            // 5. Pains -> text-[13px] for great legibility, removed h-[140px] and overflow-hidden to prevent cutting text
+            painsRow.innerHTML = `
+                <div class="w-[180px] flex-shrink-0 bg-[#FFFCE8] flex flex-col items-center justify-center border-r border-mapBorder py-6 text-center">
+                    <span class="font-bold text-slate-800 text-sm">痛點</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Pains</span>
+                </div>
+                ${stages.map(s => `
+                    <div class="w-[230px] flex-shrink-0 border-r border-mapBorder p-4 flex flex-col gap-2.5 justify-start">
+                        ${s.pains.length > 0 ? s.pains.map(pain => `
+                            <div class="text-[13px] text-slate-700 leading-normal flex items-start gap-1">
+                                <span class="text-amber-500 mt-1 flex-shrink-0">•</span>
+                                <span>${pain}</span>
+                            </div>
+                        `).join('') : '<span class="text-xs text-slate-400 italic">無明顯摩擦點</span>'}
+                    </div>
+                `).join('')}
+            `;
+
+            // 6. Gains -> text-[13px], removed h-[140px] and overflow-hidden to prevent cutting text
+            gainsRow.innerHTML = `
+                <div class="w-[180px] flex-shrink-0 bg-[#FFFCE8] flex flex-col items-center justify-center border-r border-mapBorder py-6 text-center">
+                    <span class="font-bold text-slate-800 text-sm">機會點</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Gains</span>
+                </div>
+                ${stages.map(s => `
+                    <div class="w-[230px] flex-shrink-0 border-r border-mapBorder p-4 flex flex-col gap-2.5 justify-start">
+                        ${s.gains.length > 0 ? s.gains.map(gain => `
+                            <div class="text-[13px] text-slate-700 leading-normal flex items-start gap-1">
+                                <span class="text-emerald-500 mt-1 flex-shrink-0">•</span>
+                                <span>${gain}</span>
+                            </div>
+                        `).join('') : '<span class="text-xs text-slate-400 italic">暫無機會點</span>'}
+                    </div>
+                `).join('')}
+            `;
+
+            // 7. Solutions (帶有點數 + 上到下由多到少排序 + 點數採用黃棕色) -> 解決方案註解文字調大為 text-xs
+            solutionsRow.innerHTML = `
+                <div class="w-[180px] flex-shrink-0 bg-[#FFFCE8] flex flex-col items-center justify-center border-r border-mapBorder p-3 text-center">
+                    <span class="font-bold text-slate-800 text-sm">解決方案</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Solution</span>
+                    <div class="text-xs text-amber-800 font-bold leading-normal mt-4 text-left border-t border-dashed border-[#FFE082] pt-3">
+                        * 註：點數目 = 投票 (技術可行 + 商業有益 + 使用者需求) 加起來總票數
+                    </div>
+                </div>
+                ${stages.map(s => {
+                    // Sort solutions from highest votes to lowest votes (由多到少排)
+                    const sortedSols = s.solutions ? [...s.solutions].sort((a, b) => b.votes - a.votes) : [];
+                    
+                    return `
+                        <div class="w-[230px] flex-shrink-0 border-r border-mapBorder p-4 flex flex-col justify-start">
+                            ${sortedSols.length > 0 ? `
+                                <div class="w-full bg-[#FFFEEB] border border-dashed border-[#FFE082] rounded-lg p-3 min-h-[105px] shadow-sm flex flex-col justify-start items-start text-left">
+                                    <ul class="space-y-1.5 w-full">
+                                        ${sortedSols.map(sol => `
+                                            <li class="text-sm text-slate-800 font-bold leading-normal flex items-start gap-1">
+                                                <span class="text-amber-500 mt-1 flex-shrink-0">•</span>
+                                                <span>
+                                                    ${sol.desc} 
+                                                    <span class="text-amber-800 font-black whitespace-nowrap">(${sol.votes}點)</span>
+                                                </span>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            ` : `
+                                <div class="w-full bg-[#FFFEEB] border border-dashed border-[#FFE082] rounded-lg p-3 min-h-[105px] shadow-sm flex items-center justify-center text-slate-400 italic text-xs">—</div>
+                            `}
+                        </div>
+                    `;
+                }).join('')}
+            `;
+
+            // Bind scroll listeners for smooth sliding hint arrow updates
+            scrollContainer.addEventListener('scroll', updateScrollButtons);
+            window.addEventListener('resize', updateScrollButtons);
+            updateScrollButtons(); // Trigger immediately to compute arrow states
+            
+            renderControlPanel();
+            renderEmotionCurve();
+        }
+
+        // --- 6. RENDER SEPARATE CONTROL PANEL (BOTTOM) ---
+        function renderControlPanel() {
+            const panel = document.getElementById('control-panel-container');
+            if (!panel) return;
+            panel.innerHTML = `
+                <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                    <span class="text-xl">🎛️</span>
+                    <div>
+                        <h3 class="font-black text-slate-800 text-sm">動態情緒分數控制面板 (${roles[currentRole].name})</h3>
+                        <p class="text-[10px] text-slate-400 font-normal">拖動滑桿即可即時更新上方大圖的情緒曲線。本控制面板在下載與列印時會 **自動隱藏**。</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-12 gap-3 text-xs font-bold text-slate-600">
+                    ${stages.map(s => `
+                        <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg flex flex-col gap-1.5">
+                            <div class="flex justify-between items-center text-[10px]">
+                                <span class="text-slate-500 truncate max-w-[80px]">階段 ${s.id}</span>
+                                <span class="font-black text-amber-600" id="panel-score-val-${s.id}">${s.score}分</span>
+                            </div>
+                            <input 
+                                type="range" 
+                                min="1" 
+                                max="10" 
+                                value="${s.score}" 
+                                oninput="updateScore(${s.id}, this.value)"
+                                class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#FDD835]"
+                            />
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // --- 7. SCORE ADJUST & BEZIER GRAPH CURVE UPDATE ---
+        function updateScore(id, val) {
+            const stage = stages.find(s => s.id === id);
+            if (stage) {
+                stage.score = parseInt(val);
+                const textEl = document.getElementById(`panel-score-val-${id}`);
+                if (textEl) textEl.innerText = val + "分";
+                renderEmotionCurve();
+            }
+        }
+
+        function renderEmotionCurve() {
+            const points = stages.map((s, idx) => {
+                const x = (columnWidth / 2) + (idx * columnWidth);
+                const y = height - (s.score / 10) * (height - 40) - 20;
+                return { x, y, id: s.id, score: s.score };
+            });
+
+            // Calculate SVG smooth Cubic Bezier Path
+            let pathD = `M ${points[0].x} ${points[0].y}`;
+            for (let i = 1; i < points.length; i++) {
+                const prev = points[i-1];
+                const curr = points[i];
+                const cpX1 = prev.x + (columnWidth / 3);
+                const cpY1 = prev.y;
+                const cpX2 = curr.x - (columnWidth / 3);
+                const cpY2 = curr.y;
+                pathD += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${curr.x} ${curr.y}`;
+            }
+
+            // Apply Path attributes
+            document.getElementById('curve-path').setAttribute('d', pathD);
+            document.getElementById('curve-glow').setAttribute('d', pathD);
+            document.getElementById('curve-fill').setAttribute('d', `${pathD} L ${points[points.length-1].x} 180 L ${points[0].x} 180 Z`);
+
+            // Reposition score bubbles and update text dynamically
+            points.forEach(pt => {
+                const bubble = document.getElementById('score-bubble-' + pt.id);
+                const emoji = document.getElementById('emoji-' + pt.id);
+                if (bubble) {
+                    bubble.style.transform = `translateY(${pt.y - 68}px)`;
+                    bubble.querySelector('.score-val').innerText = pt.score;
+                }
+                if (emoji) {
+                    emoji.style.transform = `translateY(${pt.y - 2}px)`;
+                    emoji.innerText = getEmoji(pt.score);
+                }
+            });
+        }
+
+        // --- 8. SMOOTH ARROW CLICK SCROLL FUNCTION (往右/往左點擊滾動) ---
+        function scrollJourney(direction) {
+            const container = document.getElementById('journey-scroll-viewport');
+            if (!container) return;
+            
+            // Scroll by exactly 3 columns (3 * 230px = 690px)
+            const scrollAmount = columnWidth * 3;
+            
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        // Dynamic hide/show of left/right arrow hints based on real scroll status
+        function updateScrollButtons() {
+            const container = document.getElementById('journey-scroll-viewport');
+            const leftBtn = document.getElementById('scroll-btn-left');
+            const rightBtn = document.getElementById('scroll-btn-right');
+            const textHint = document.getElementById('scroll-text-hint');
+            
+            if (!container || !leftBtn || !rightBtn || !textHint) return;
+
+            // 1. Left Arrow visibility
+            if (container.scrollLeft > 30) {
+                leftBtn.style.opacity = '1';
+                leftBtn.style.pointerEvents = 'auto';
+            } else {
+                leftBtn.style.opacity = '0';
+                leftBtn.style.pointerEvents = 'none';
+            }
+
+            // 2. Right Arrow & Slide Text Hint visibility
+            const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 30;
+            if (isAtEnd) {
+                rightBtn.style.opacity = '0';
+                rightBtn.style.pointerEvents = 'none';
+                textHint.style.opacity = '0';
+            } else {
+                rightBtn.style.opacity = '1';
+                rightBtn.style.pointerEvents = 'auto';
+                
+                // Show hint text only if we haven't scrolled much to the right yet
+                if (container.scrollLeft < 150) {
+                    textHint.style.opacity = '1';
+                } else {
+                    textHint.style.opacity = '0';
+                }
+            }
+        }
+
+        // --- 9. HIGH-RESOLUTION EXPORT ENGINE (JPG / PDF) ---
+        function downloadFullMap() {
+            const scrollContainer = document.getElementById('journey-scroll-viewport');
+            const mapContainer = document.getElementById('full-journey-canvas');
+            const btn = document.querySelector('button[onclick="downloadFullMap()"]');
+            
+            if (!scrollContainer || !mapContainer || !btn) return;
+
+            // Show Loading state
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> 正在生成地圖 (請稍候)...`;
+            btn.disabled = true;
+
+            // Check if html2canvas loaded successfully
+            if (typeof html2canvas === 'undefined') {
+                alert("💡 由於安全原則阻擋自動下載，請嘗試直接對網頁點擊右鍵列印，將檔案匯出為 PDF！");
+                window.print();
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                return;
+            }
+
+            // Force the scrollable table area to be completely visible horizontally during render
+            const originalScrollStyle = scrollContainer.style.overflowX;
+            scrollContainer.style.overflowX = 'visible';
+
+            // Wait brief moment for layout updates before capturing
+            setTimeout(() => {
+                html2canvas(mapContainer, {
+                    useCORS: true,
+                    scale: 1.5, // Crisp export scale
+                    backgroundColor: '#FAFAFA',
+                    logging: false
+                }).then(canvas => {
+                    // Restore original scroll style
+                    scrollContainer.style.overflowX = originalScrollStyle;
+
+                    // Get high quality JPG base64 data
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                    const filename = `永豐金大戶投_使用者旅程地圖_${roles[currentRole].name}.jpg`;
+
+                    try {
+                        // Attempt Direct download
+                        const link = document.createElement('a');
+                        link.download = filename;
+                        link.href = imgData;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    } catch (downloadErr) {
+                        // Sandbox Fallback: Open in new window for Right-Click Save
+                        console.warn("Direct download restricted by browser sandbox. Opening fallback image window...");
+                        const newWindow = window.open();
+                        if (newWindow) {
+                            newWindow.document.write(`
+                                <html>
+                                <head><title>永豐金大戶投 - 下載地圖</title></head>
+                                <body style="margin:0; background:#FAFAFA; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:sans-serif; padding:30px;">
+                                    <div style="background:#FFF176; padding:15px 30px; border-radius:10px; font-weight:bold; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.06); text-align:center;">
+                                        🎉 旅程地圖已完美生成！請在下方「圖片上點擊右鍵」選擇「另存圖片」即可儲存為 ${filename}！
+                                    </div>
+                                    <img src="${imgData}" style="max-width:100%; border:1px solid #D6D6D6; box-shadow:0 12px 30px rgba(0,0,0,0.1); border-radius:4px;" />
+                                </body>
+                                </html>
+                            `);
+                        } else {
+                            alert("新分頁被瀏覽器阻擋，請開啟彈出式視窗權限，或直接對網頁點擊右鍵列印。");
+                        }
+                    }
+
+                    // Restore button state
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }).catch(err => {
+                    console.error("Export failed", err);
+                    scrollContainer.style.overflowX = originalScrollStyle;
+                    alert("💡 瀏覽器阻擋了 Canvas 生成。為您自動開啟列印面板，可以直接將整張圖「儲存為 PDF」。");
+                    window.print();
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                });
+            }, 100);
+        }
+
+        // --- 10. INITIAL-SCALE OVERRIDE ENGINE FOR SLIDER ---
+        function adjustMapFontSize(val) {
+            let styleTag = document.getElementById('dynamic-font-style');
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                styleTag.id = 'dynamic-font-style';
+                document.head.appendChild(styleTag);
+            }
+            
+            // Scalable CSS mapping based on slider value (10 to 20) (預設大型化放大優化)
+            const baseSize = parseInt(val);
+            styleTag.innerHTML = `
+                #full-journey-canvas .text-sm { font-size: ${baseSize + 2}px !important; }
+                #full-journey-canvas .text-xs { font-size: ${baseSize}px !important; }
+                #full-journey-canvas .text-\\[13px\\] { font-size: ${baseSize + 1}px !important; }
+                #full-journey-canvas li { font-size: ${baseSize + 1}px !important; }
+                #full-journey-canvas .text-sm.font-bold { font-size: ${baseSize + 2}px !important; }
+            `;
+        }
+
+        // Load initially
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+            initMap();
+            adjustMapFontSize(15); // Run font scaling on startup (預設開啟 15 號極清晰大字體)
+        });
+    </script>
+
+</body></html>
