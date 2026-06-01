@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW"><head><script type="importmap">{"imports":{"/index.html":"blob:https://private-chat.tim-dev.org/0feb00c2-7c35-4bca-8662-92a3f74b379d","/__virtual__/index.html":"blob:https://private-chat.tim-dev.org/0feb00c2-7c35-4bca-8662-92a3f74b379d"}}</script>
+<html lang="zh-TW"><head><script type="importmap">{"imports":{"/index.html":"blob:https://private-chat.tim-dev.org/ac630c96-419f-41e8-bbf9-ab999d6aab20","/__virtual__/index.html":"blob:https://private-chat.tim-dev.org/ac630c96-419f-41e8-bbf9-ab999d6aab20"}}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SinoPac DAWHO - User Journey Map (多角色切換看板)</title>
@@ -89,7 +89,7 @@
         <div class="flex items-center gap-4 flex-shrink-0">
             <span class="text-2xl">📊</span>
             <div>
-                <h1 id="main-title" class="font-black text-slate-800 text-lg leading-tight">永豐金大戶投 APP 體驗重塑：<br>Design Thinking Workshop 核心客群旅程地圖成果展</h1>
+                <h1 id="main-title" class="font-black text-slate-800 text-lg leading-tight">永豐金大戶投 APP 體驗重塑：<br>Design Thinking Workshop 客戶旅程地圖成果</h1>
                 <p class="text-xs text-slate-500">使用者旅程地圖互動看板 (Workshop 數位五角色切換大看板)</p>
             </div>
         </div>
@@ -289,16 +289,16 @@
                 stages: [
                     { id: 1, need: "昨日美股漲跌指數，市場早報", purpose: "看盤，了解市場資訊，找今日當沖標的", nodes: ["指數數據", "昨日美股收盤", "選股關鍵"], score: 3, title: "字太小，名詞難懂", pains: ["字太小，名詞難懂"], gains: ["如何透過字太小與易懂命名用詞幫助客戶順利抵達目的服務"], solutions: [{ desc: "調整適切的字體or自定義大小與名詞命名易懂", votes: 11 }] },
                     { id: 2, need: "自己當日買賣額度、目前融資額度", purpose: "了解自己委託金額，避免下單失敗", nodes: ["盤點金額"], score: 4, title: "版面複雜、找不到功能", pains: ["找不到功能", "整體版面Layout複雜", "預設打開app去自選或庫存而非總覽"], gains: ["如何利用版面簡潔安排幫助客戶更直覺找到導航的功能服務", "如何彈性預設開啟app tab讓客戶便利使用(先去庫存貨自選)"], solutions: [{ desc: "可自定義總覽區塊與排列順序", votes: 18 }, { desc: "彈性預設開啟 APP tab 順序（自定義 tab 位置）", votes: 9 }] },
-                    { id: 3, need: "前往通知中心", purpose: "看昨晚美股成交委託，交割帳務，確認狀態", nodes: ["成委回狀態", "金額", "交割帳戶夠嗎"], score: 5, title: "功能全靠搜尋", pains: ["功能用搜尋的", "清楚且好搜尋的操作手冊", "找不到就問營業員"], gains: ["如何幫助客戶更順暢「搜尋」功能或服務使用，外加使用說明"], solutions: [{ desc: "新增搜尋「功能」的功能(如功能使用&常見問題）", votes: 16 }] },
-                    { id: 4, need: "收到申購通知推播", purpose: "申購資訊、價差、價位", nodes: ["價差", "時間", "錢"], score: 3, title: "不知如何操作", pains: ["不知如何使用"], gains: ["如何知道全司常見問題整理，讓同仁及客戶都可以更快找到答案"], solutions: [{ desc: "建立更多原生服務（常用）ex: 豐存股、圈存", votes: 17 }] },
-                    { id: 5, need: "收到新聞推播", purpose: "抽籤賺價差", nodes: ["智慧申購設定", "申購便利通", "立即申購"], score: 6, title: "自動圈存便利性", pains: [], gains: [], solutions: [] },
+                    { id: 3, need: "前往通知中心", purpose: "看昨晚美股成交委託，交割帳務，確認狀態", nodes: ["成委回狀態", "金額", "交割帳戶夠嗎"], score: 5, title: "功能全靠搜尋", pains: ["功能用搜尋的", "清楚且好搜尋的操作手冊"], gains: ["如何幫助客戶更順暢「搜尋」功能或服務使用，外加使用說明"], solutions: [{ desc: "新增搜尋「功能」的功能(如功能使用&常見問題）", votes: 16 }] },
+                    { id: 4, need: "收到申購通知推播", purpose: "申購資訊、價差、價位", nodes: ["價差", "時間", "錢"], score: 3, title: "不知如何操作", pains: ["不知如何使用", "找不到就問營業員"], gains: ["如何知道全司常見問題整理，讓同仁及客戶都可以更快找到答案"], solutions: [] },
+                    { id: 5, need: "收到新聞推播", purpose: "抽籤賺價差", nodes: ["智慧申購設定", "申購便利通", "立即申購"], score: 7, title: "推播流暢度佳", pains: [], gains: [], solutions: [] },
                     { id: 6, need: "去股票申購", purpose: "閱覽文章", nodes: ["關鍵事件", "關鍵股號"], score: 7, title: "流程基本順暢", pains: [], gains: [], solutions: [] },
                     { id: 7, need: "收到活動推播", purpose: "想看抽獎資訊", nodes: ["任務資訊", "如何抽"], score: 5, title: "功能板塊不支援自訂", pains: ["自訂總覽區塊及功能", "學習及行銷活動自訂開啟或關閉"], gains: ["如何根據客戶使用習慣自訂義功能排序，符合需求好上手"], solutions: [] },
                     { id: 8, need: "前往活動入口頁面", purpose: "參加活動了解如何獲獎", nodes: ["清楚的資訊", "流暢簽署"], score: 8, title: "活動指引清晰", pains: [], gains: [], solutions: [] },
                     { id: 9, need: "下單失效要簽署ASK營業員", purpose: "只簽署該文件", nodes: ["活動的狀態", "達成難易度與狀態"], score: 7, title: "文件簽署引導", pains: ["通知資訊不足(如下單失敗原因)", "下單失敗通知原因寫清楚"], gains: ["如何給予充足通知，清楚的彙整資訊，讓客戶安心下單或進行服務"], solutions: [{ desc: "完備成委回失敗通知原因＋引導排除", votes: 5 }] },
                     { id: 10, need: "收到庫存日報看到雷達標示", purpose: "看庫存及雷達貼標", nodes: ["雷達", "策略"], score: 6, title: "主動警示不足", pains: ["雷達可做觸發主動通知"], gains: ["如何利用策略訊號主動通知客戶，提升交易動機且控管風險"], solutions: [{ desc: "雷達&到價主動通知功能", votes: 16 }] },
                     { id: 11, need: "注意股警示股下單失敗ASK營業員", purpose: "圈存，預收款券", nodes: ["圈存款", "圈存股票"], score: 2, title: "失敗原因標示不清", pains: ["自動圈存增加便利"], gains: ["如何降低客戶手動圈存動作，改自動提升效率並減少客訴"], solutions: [{ desc: "開發自動圈存服務（如現行調額）", votes: 4 }] },
-                    { id: 12, need: "確認有無成功", purpose: "確認申購、簽署、圈存活動有無成功", nodes: ["完成狀態或進度清楚"], score: 8, title: "期望有原生整合", pains: ["更多直覺的原生服務"], gains: ["如何將全司服務減少斷點或使用體驗的建立原生系統(下載憑證豐存股)"], solutions: [] }
+                    { id: 12, need: "確認有無成功", purpose: "確認申購、簽署、圈存活動有無成功", nodes: ["完成狀態或進度清楚"], score: 8, title: "期望有原生整合", pains: ["更多直覺的原生服務"], gains: ["如何將全司服務減少斷點或使用體驗的建立原生系統(下載憑證豐存股)"], solutions: [{ desc: "建立更多原生服務（常用）ex: 豐存股、圈存", votes: 17 }] }
                 ]
             },
             
