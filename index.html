@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW"><head><script type="importmap">{"imports":{"/index.html":"blob:https://private-chat.tim-dev.org/ac630c96-419f-41e8-bbf9-ab999d6aab20","/__virtual__/index.html":"blob:https://private-chat.tim-dev.org/ac630c96-419f-41e8-bbf9-ab999d6aab20"}}</script>
+<html lang="zh-TW"><head><script type="importmap">{"imports":{"/index.html":"blob:https://private-chat.tim-dev.org/ebf3993b-0be3-4450-a2bc-19812378c4ef","/__virtual__/index.html":"blob:https://private-chat.tim-dev.org/ebf3993b-0be3-4450-a2bc-19812378c4ef"}}</script><script type="importmap">{"imports":{"/index.html":"blob:https://private-chat.tim-dev.org/ac630c96-419f-41e8-bbf9-ab999d6aab20","/__virtual__/index.html":"blob:https://private-chat.tim-dev.org/ac630c96-419f-41e8-bbf9-ab999d6aab20"}}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SinoPac DAWHO - User Journey Map (多角色切換看板)</title>
@@ -168,7 +168,7 @@
                         <div class="flex flex-wrap items-center gap-x-8 gap-y-2 text-base">
                             <div class="flex items-center gap-1.5 whitespace-nowrap">
                                 <span class="text-slate-400 font-bold">投資年齡：</span>
-                                <span id="meta-invest-age" class="font-extrabold text-slate-800">10 年</span>
+                                <span id="meta-invest-age" class="font-extrabold text-slate-8">10 年</span>
                             </div>
                             <div class="flex items-center gap-1.5 whitespace-nowrap">
                                 <span id="meta-trade-scale-label" class="text-slate-400 font-bold">交易規模：</span>
@@ -327,7 +327,7 @@
                     { id: 5, need: "預收款券、圈存警示股", purpose: "交易需求買賣圈存", nodes: ["銀行餘額", "庫存股數"], score: 3, title: "憑證申請繁複", pains: ["好多憑證要申請"], gains: ["簡化點選步驟"], solutions: [{ desc: "處置股買進系統自動從銀行圈錢、賣出可以自動圈股票（現行需自行設定）", votes: 16 }] },
                     { id: 6, need: "主動式ETF買甚麼", purpose: "知道經理人操作方向", nodes: ["哪檔ETF標的(增減)金額", "折溢價盤況", "族群分布"], score: 4, title: "自選加入很麻煩", pains: ["標的的加自選麻煩"], gains: ["選股路徑優化", "標的好找"], solutions: [{ desc: "批次增減自選標的", votes: 3 }, { desc: "選股提供回測結果、勝率與操作週期", votes: 3 }] },
                     { id: 7, need: "看一下盤中熱門，漲跌幅排行看資金流向", purpose: "查看本日趨勢及熱門產業強勢股", nodes: ["依不同指標進行分類的排行", "跳轉個股頁面", "熱門標的排行技術分析"], score: 7, title: "排行實用性佳", pains: [], gains: ["同產業個股連結(路徑)"], solutions: [] },
-                    { id: 8, need: "財經行事曆", purpose: "確認法說會時間及營收公布日期", nodes: ["個股業績展望說明會議", "本周個股法說", "法說盈收公佈除權息日期"], score: 8, title: "日曆資訊詳實", pains: [], gains: ["賺賠損益走勢圖"], solutions: [] },
+                    { id: 8, need: "財經行事曆", purpose: "確認法說會時間及營收公布日期", nodes: ["個股業績展望說明會議", "本周個股法說", "法說盈收公佈除權息日期"], score: 8, title: "日曆資訊詳: 詳實", pains: [], gains: ["賺賠損益走勢圖"], solutions: [] },
                     { id: 9, need: "委託下單", purpose: "成交想買賣標的", nodes: ["改類別改帳", "查看成交回報", "當沖回報、當沖損益"], score: 3, title: "美股下單缺少關鍵資訊", pains: ["美股下單介面沒有\"下單可用金額\""], gains: ["美股下單介面可以直接選擇想用的幣別\"台幣交割\"或\"外幣交割\"", "美股下單介面有\"下單可用金額\"顯示"], solutions: [{ desc: "複委託下單：可以自行再下單頁面選擇「台幣交割」、「外幣交割」", votes: 12 }, { desc: "複委託下單頁面「可用下單金額」資訊，避免重複回到帳務畫面確認帳務", votes: 2 }, { desc: "加強引導頁籤整理", votes: 0 }] },
                     { id: 10, need: "當日交割款", purpose: "足額交額資金調度", nodes: ["帳務銀行餘額", "資金管理帳戶出入金", "T+5日借貸申請"], score: 6, title: "警告缺少排除導引", pains: ["美股下單介面不能直接選擇\"台幣交割\"或\"外幣交割\""], gains: ["交易(下單)及庫存還有帳務可以用頁籤切換，不用在返回上一畫面", "跳出錯誤訊息後，引導客戶解決"], solutions: [] },
                     { id: 11, need: "查看盤後資訊", purpose: "和朋友分享資訊損益", nodes: ["資訊是否清楚跟正確"], score: 8, title: "對帳單分享完整", pains: [], gains: [], solutions: [] }
@@ -352,12 +352,12 @@
                     l: "首次登入至今 &gt; 3 年"
                 },
                 stages: [
-                    { id: 1, need: "想了解庫存持股行情", purpose: "是否要換股", nodes: ["損益", "關鍵價到價", "自選股"], score: 4, title: "長短線混淆", pains: ["不知道做長/短", "UI介面調整需求", "字體太小"], gains: ["字體放大功能", "直覺易用的UI畫面調整"], solutions: [{ desc: "字體放大", votes: 19 }, { desc: "列出每日焦點強勢族群之個股", votes: 1 }] },
-                    { id: 2, need: "盤前看籌碼整理/排行", purpose: "想獲得熱門股資訊（短多、籌碼等）", nodes: ["週期多分析"], score: 5, title: "盼望提供主流族群", pains: ["想看目前的主流族群"], gains: ["支援二階段排序功能"], solutions: [{ desc: "盤中提供短多、精選個股，並提供相關資訊成交量、周轉排行等", votes: 1 }] },
-                    { id: 3, need: "總覽直接呈現相關資訊", purpose: "快速找到可交易的個股", nodes: ["個股結果", "可加自選", "一鍵下單"], score: 3, title: "容易產生選擇障礙", pains: ["選擇障礙", "找不到功能", "建立更多常用原生服務"], gains: ["直列族群＆相關個股呈現方式"], solutions: [{ desc: "自選股勾選：可以從智慧選股一次多選加入自選", votes: 9 }, { desc: "一鍵加自選、多檔同時加自選", votes: 5 }, { desc: "設定自選呈現資訊欄位且可匯出匯入", votes: 3 }] },
-                    { id: 4, need: "盤中交易診斷", purpose: "了解產業關鍵排行、資金投入", nodes: ["自己歸納族群", "個股->族群->選股"], score: 4, title: "對自動化策略欠缺信任", pains: ["不信任自動化策略", "找不到操作方式只好問營業員"], gains: ["如何給予直列族群與相關個股，降低點選步驟"], solutions: [{ desc: "細節產業清單", votes: 15 }, { desc: "二階段篩選", votes: 11 }, { desc: "截圖加自選", votes: 11 }] },
-                    { id: 5, need: "盤中跟單推薦", purpose: "找到資金流入轉強的標的", nodes: ["找到資金流入轉強標的"], score: 3, title: "選股多不知道怎麼用", pains: ["選股與清單很多，但不知道怎麼使用", "想知道市場當前正在討論什麼"], gains: ["快速找到熱門消息一鍵跟單"], solutions: [{ desc: "跟單", votes: 29 }] },
-                    { id: 6, need: "盤後：籌碼整理", purpose: "做功課整理隔天可交易的個股", nodes: ["資訊清楚（籌碼/營收）"], score: 6, title: "希望有清晰市場話題整理", pains: ["想知道市場在討論什麼"], gains: ["籌碼整理及到價通知連動"], solutions: [{ desc: "調整畫面自訂排序", votes: 6 }, { desc: "報價排序：成交價、漲跌%、成交量", votes: 5 }] }
+                    { id: 1, need: "想了解庫存持股行情", purpose: "是否要換股", nodes: ["損益", "關鍵價到價", "自選股"], score: 4, title: "長短線混淆", pains: ["不知道做長/短"], gains: ["字體放大", "UI調整"], solutions: [{ desc: "字體放大", votes: 19 }, { desc: "列出每日焦點強勢族群之個股", votes: 1 }] },
+                    { id: 2, need: "盤前看籌碼整理/排行", purpose: "想獲得熱門股資訊（短多、籌碼等）", nodes: ["週期多"], score: 5, title: "盼望提供主流族群", pains: ["想看目前的主流族群"], gains: [], solutions: [{ desc: "盤中提供短多、精選個股，並提供相關資訊成交量、周轉排行等", votes: 1 }] },
+                    { id: 3, need: "總覽直接呈現相關資訊", purpose: "快速找到可交易的個股", nodes: ["個股結果", "可加自選", "一鍵下單"], score: 3, title: "容易產生選擇障礙", pains: ["選擇障礙"], gains: ["二階段排序篩選：成交量、漲幅排序（可現股當初排除處置股）"], solutions: [{ desc: "設定自選呈現資訊欄位且可匯出匯入", votes: 3 }] },
+                    { id: 4, need: "盤中", purpose: "了解產業關鍵排行", nodes: ["個股", "族群", "選股"], score: 4, title: "不信任策略", pains: ["不信任策略", "想知道市場在討論什麼"], gains: ["直列族群＆相關個股", "自己歸納族群"], solutions: [{ desc: "細節產業清單", votes: 15 }, { desc: "自選股勾選：可以從智慧選股一次多選加入自選", votes: 9 }, { desc: "一鍵加自選、多檔同時加自選", votes: 5 }] },
+                    { id: 5, need: "盤中", purpose: "找到資金流入轉強的標的", nodes: ["產業關鍵排名"], score: 3, title: "選股功能多不知怎用", pains: ["選股功能很多但不知道怎麼用"], gains: ["需要快速直白顯示今天可以買誰哪個群組，不要太多層頁面", "多選加入自選"], solutions: [{ desc: "跟單", votes: 29 }, { desc: "二階段篩選", votes: 11 }, { desc: "截圖加自選", votes: 11 }] },
+                    { id: 6, need: "盤後：籌碼整理", purpose: "做功課整理隔天可交易的個股", nodes: ["資訊清楚（籌碼/營收）"], score: 6, title: "選股清單多且分類不清", pains: ["選股清單很多但不知道怎麼用，分類不清楚差異", "想知道市場在討論什麼"], gains: [], solutions: [{ desc: "調整畫面自訂排序", votes: 6 }, { desc: "報價排序：成交價、漲跌%、成交量", votes: 5 }] }
                 ]
             },
 
@@ -380,15 +380,15 @@
                     l: "首次登入距今 366 天 - 3 年"
                 },
                 stages: [
-                    { id: 1, need: "登入大戶投 APP", purpose: "登入驗證", nodes: ["生物辨識", "快速登入"], score: 4, title: "憑證重登痛點", pains: ["外開還會需要重新登入憑證"], gains: [], solutions: [] },
+                    { id: 1, need: "登入大戶頭 APP", purpose: "登入驗證", nodes: ["生物辨識", "快速登入"], score: 4, title: "外開需重登憑證", pains: ["外開還會需要重新登入憑證"], gains: [], solutions: [] },
                     { id: 2, need: "想了解出借資訊", purpose: "想將持有存股進行出借", nodes: ["費率", "可出借股數", "預估報酬"], score: 5, title: "資訊不易找到", pains: ["不易找到相關資訊"], gains: [], solutions: [] },
-                    { id: 3, need: "查詢哪邊可以中", purpose: "找到加開借券位置", nodes: ["功能分類", "開戶專專區", "篩選分類"], score: 7, title: "尋找功能路徑", pains: [], gains: [], solutions: [] },
+                    { id: 3, need: "查詢哪邊可以中", purpose: "找到加開借券位置", nodes: ["功能分類", "開戶專區", "篩選分類"], score: 7, title: "尋找功能路徑", pains: [], gains: [], solutions: [] },
                     { id: 4, need: "前往加開頁面", purpose: "準備開戶文件", nodes: ["申請文件", "說明", "提示清楚"], score: 8, title: "提示清晰度佳", pains: [], gains: [], solutions: [] },
                     { id: 5, need: "申請階段", purpose: "開戶申請", nodes: ["快速", "簡單", "明確"], score: 8, title: "申請流暢快速", pains: [], gains: [], solutions: [] },
                     { id: 6, need: "開戶進度", purpose: "進度查詢", nodes: ["營業員 TEL", "狀態", "何時生效"], score: 4, title: "進度資訊單調", pains: ["加開進度查詢", "畫面只有加開沒其他資訊"], gains: ["一頁式查詢加開進度"], solutions: [] },
                     { id: 7, need: "出借申請", purpose: "可以去哪出借", nodes: ["引導明確", "問題 QA", "限制"], score: 7, title: "出借資格說明", pains: [], gains: [], solutions: [] },
-                    { id: 8, need: "報酬社群分享", purpose: "分享給好友", nodes: ["查無此功能", "支援平台(社群)"], score: 8, title: "期待有直接分享機制", pains: [], gains: [], solutions: [] },
-                    { id: 9, need: "戶籍 or 職業變更", purpose: "變更基本資料", nodes: ["功能查找"], score: 3, title: "職業戶籍無法線上變更", pains: ["基本資料修改 證券、財管無法線上變更職業", "戶籍地不能線上變更"], gains: ["請資訊部綜合評估，直接將欄位加上去"], solutions: [] },
+                    { id: 8, need: "報酬社群分享", purpose: "分享給好友", nodes: ["有無此功能", "支援平台(社群)"], score: 8, title: "期待直接分享機制", pains: [], gains: [], solutions: [] },
+                    { id: 9, need: "戶籍 or 職業變更", purpose: "變更基本資料", nodes: ["功能查找"], score: 3, title: "無法線上變更職業戶籍", pains: ["基本資料修改 證券、財管無法線上變更職業", "戶籍地不能線上變更"], gains: ["請資訊部綜合評估，直接將欄位加上去"], solutions: [] },
                     { id: 10, need: "下單額度不足", purpose: "想下單高價股", nodes: ["可用剩餘額", "交易額度"], score: 6, title: "下高價股限額", pains: ["線上只能隔日生效"], gains: ["委託額度達使用額度80%，系統主動調額"], solutions: [{ desc: "線上授信調整", votes: 24 }, { desc: "線上調額立即生效", votes: 13 }, { desc: "授信加開三合一", votes: 8 }] },
                     { id: 11, need: "線上調整 or 打給營業員", purpose: "提升額度", nodes: ["調整額度生效"], score: 4, title: "線上隔日生效痛點", pains: ["線上只能隔日生效"], gains: [], solutions: [] },
                     { id: 12, need: "線上客戶想要營業員服務", purpose: "降低手續費", nodes: ["營業員是誰", "電話號碼"], score: 5, title: "高波動期營業員難聯絡", pains: ["遇到市場波動較大時，客戶無法馬上找到專員"], gains: [], solutions: [] },
@@ -396,8 +396,8 @@
                     { id: 14, need: "警示股交易 -> 款項圈存", purpose: "買賣警示股", nodes: ["圈存狀態", "圈存金額"], score: 2, title: "下單失敗只有冰冷錯誤", pains: ["警示股下單只有錯誤訊息", "警示股引導預圈"], gains: ["引導預收款券", "顯示已圈/未圈金額", "下單前要提醒圈存/簽署"], solutions: [{ desc: "下單匣上方會有提示", votes: 10 }, { desc: "如何讓想下警示股客戶有更好引導 and 更方便下單及了解圈存金額", votes: 4 }] },
                     { id: 15, need: "電子投票", purpose: "股東 e 服務", nodes: ["投票"], score: 4, title: "投票功能難找", pains: ["找不到功能"], gains: ["找到捷徑預設「釘選」最上方"], solutions: [{ desc: "商品搜尋多 1 頁籤為「功能」，可以直接找到想要的功能", votes: 11 }] },
                     { id: 16, need: "打算變更對帳單收取方式", purpose: "更容易掌握對帳單的資訊", nodes: ["改新email", "郵寄紙本", "改成郵政信箱"], score: 7, title: "對帳單設定", pains: [], gains: [], solutions: [] },
-                    { id: 17, need: "存股賺多少", purpose: "了解成本費用", nodes: ["手續費", "成本", "賣出獲利"], score: 8, title: "損益與手續費透明", pains: [], gains: [], solutions: [{ desc: "商品搜尋多 1 頁籤為「功能」，可以直接找到想要的功能", votes: 11 }, { desc: "特定時節用戶常用功能 SHOW 在上方(股東e服務)", votes: 0 }] },
-                    { id: 18, need: "怎麼存股", purpose: "存股要買哪檔", nodes: ["存股排行", "高殖利率", "科技股"], score: 4, title: "存股必須跳轉網頁", pains: ["存股要開網頁"], gains: ["開存網頁不知道豐存股是什麼"], solutions: [{ desc: "下單直接下存股", votes: 9 }, { desc: "豐存股更名定期定額", votes: 0 }] },
+                    { id: 17, need: "存股賺多少", purpose: "了解成本費用", nodes: ["手續費", "成本", "賣出獲利"], score: 8, title: "損益與手續費透明", pains: [], gains: [], solutions: [{ desc: "特定時節用戶常用功能 SHOW 在上方(股東e服務)", votes: 0 }] },
+                    { id: 18, need: "怎麼存股", purpose: "存股要買哪檔", nodes: ["存股排行", "高殖利率", "科技股"], score: 4, title: "存股必須跳轉網頁", pains: ["存股要開網頁"], gains: ["不知道豐存股是什麼"], solutions: [{ desc: "下單直接下存股", votes: 9 }, { desc: "豐存股更名定期定額", votes: 0 }] },
                     { id: 19, need: "存股如何買賣", purpose: "今天如何設定買進", nodes: ["選擇帳號", "選擇標的", "選擇價格、股數"], score: 7, title: "定期定額設定流程", pains: ["存股找不到/不好找約定路徑"], gains: [], solutions: [] },
                     { id: 20, need: "我做了哪些存股操作", purpose: "約定跟帳戶資訊", nodes: ["圈存金額", "餘額", "交割帳號"], score: 8, title: "掌握約定進度", pains: [], gains: [], solutions: [] },
                     { id: 21, need: "買賣台股、美股＆相關正反 ETF", purpose: "買正2 or 反1\n主動告知需符合資格：10 筆權證、10 筆期貨、加開信用", nodes: ["簽署指數股票型 ETF", "簽署槓桿反向期貨 ETF", "加開交易條件、信用戶、期貨、權證"], score: 3, title: "找不到對應簽署文件", pains: ["找不到對應的簽署文件", "信用＋不限不能一起開", "分天加開申請同一份財力評估會有差異"], gains: [], solutions: [{ desc: "如何讓用戶清楚了解加開張戶的狀態 or 開戶進度，並在同一畫面呈現", votes: 3 }] },
@@ -428,18 +428,18 @@
                     {
                         id: 1,
                         need: "用戶進入帳務（台股）",
-                        purpose: "客戶想要看銀行餘額 and 購買力",
+                        purpose: "客戶想要看銀行餘額和購買力",
                         nodes: ["台股帳務庫存", "銀行餘額剩多少", "交割款什麼時候"],
                         score: 3,
                         title: "損益難找、時間太短",
                         pains: [
-                            "找不到損益、歷史損益能查詢時間太短、載入時間過長",
-                            "資訊過多難找到想要的、介面缺乏說明、導航不清楚",
-                            "APP 頁面期望能提供更清爽的白底模式",
+                            "找不到損益、歷史損益能查詢時間太短、loading時間又太長",
+                            "資訊過多難找到想要的、介面沒解說、導航不清楚",
+                            "APP頁面能否白底",
                             "帳務太長，需要點多次才能看到(功能需一目瞭然)"
                         ],
                         gains: [
-                            "如何讓客戶在總覽第一頁就能直覺看到：1.台股帳務 2.銀行餘額 3.交割款項",
+                            "如何讓客戶在總覽第一頁就能看到\n1. 台股帳務\n2. 銀行餘額\n3. 交割款項",
                             "帳務太長，需要點多次才能看到(功能需一目瞭然)"
                         ],
                         solutions: [
@@ -458,7 +458,7 @@
                         pains: ["下單時才發現處置股需要先去做預收款券"],
                         gains: [],
                         solutions: [
-                            { desc: "指引用戶使用外部瀏覽器使用網頁（非 line, fb 內建的網頁）", votes: 4 },
+                            { desc: "指引用戶使用外部瀏覽器使用網頁（而非 line, fb 內建的網頁）", votes: 4 },
                             { desc: "UI 上可以有畫面提醒說明", votes: 2 }
                         ]
                     },
@@ -469,7 +469,7 @@
                         nodes: ["需先開立信用戶"],
                         score: 5,
                         title: "委回錯誤訊息容易誤導",
-                        pains: [], 
+                        pains: ["委回錯誤的錯誤訊息容易誤導客戶"], 
                         gains: ["如何引導客戶建立信用戶", "槓桿商品也需要開信用戶"],
                         solutions: []
                     },
@@ -485,10 +485,9 @@
                             "豐存股找不到「股利再投入」的個股列表",
                             "客戶不知道如何設定總覽捷徑、不會操作"
                         ], 
-                        gains: ["支援內建額度調整功能"],
+                        gains: [],
                         solutions: [
                             { desc: "讓豐存股庫存以原生的方式放在大戶投裡，可用原生大戶投賣出（但手續費不一樣）", votes: 21 },
-                            { desc: "建立雲端自選（iLeader, Newweb 大戶投）", votes: 12 },
                             { desc: "在豐存台股庫存列表中註記(Tag 0 or 1)哪一檔個股有設「股利再投入」", votes: 8 },
                             { desc: "在台股庫存列表中 if 有股利再投入，明細裡可 trust 到豐存股網頁設定", votes: 0 }
                         ]
@@ -501,13 +500,13 @@
                         score: 3,
                         title: "美股存股看不見庫存",
                         pains: [
-                            "美股豐存股目前在大戶投帳務看不到庫存（分開的）",
+                            "美股豐存股目前在大戶頭帳務看不到庫存（分開的）",
                             "豐存股為什麼要另外開 web",
                             "手續費不同"
                         ],
-                        gains: ["大戶投定期定額增加跨日長效單等選項（ex: 複委託長效單）"],
+                        gains: [],
                         solutions: [
-                            { desc: "在豐存股網頁庫存加入「賣出」按鍵. 1. Trust 進入大戶投APP、2.web原生賣出", votes: 5 }
+                            { desc: "在豐存股網頁庫存加入「賣出」按鍵。1. Trust 進入大戶投APP、2.web原生賣出", votes: 5 }
                         ]
                     },
                     {
@@ -518,30 +517,27 @@
                         score: 2,
                         title: "服務功能路徑不清",
                         pains: [
-                            "找不到想要的功能、介面雜亂，版面 Layout 排版太複雜",
-                            "沒有加開財富管理、複委託的功能",
-                            "匯撥股票流程教學"
+                            "找不到想要的功能、介面混亂＋版面 layout 問題 -> 太複雜",
+                            "沒有加開財管、複委託的功能",
+                            "匯撥股票流程要教學"
                         ],
-                        gains: ["如何讓客戶更快速、直覺地找到預收款券 and 匯撥等常用功能"],
+                        gains: ["內建額度調整", "如何讓客戶快速找到預收款券、匯撥等功能"],
                         solutions: [
-                            { desc: "所有申請在一個頁面能完成", votes: 8 }
+                            { desc: "所有申請在一個頁面能完成", votes: 8 },
+                            { desc: "編輯總攬版面(自訂功能)", votes: 0 }
                         ]
                     },
                     {
                         id: 7,
                         need: "iLeader 自選",
-                        purpose: "iLeader 自選和大戶投不同步",
+                        purpose: "iLeader 自選和大戶投等平台不同步",
                         nodes: [],
                         score: 3,
                         title: "自選同步與憑證障礙",
-                        pains: [
-                            "自選股找不到"
-                        ],
+                        pains: ["自選找不到"],
                         gains: [],
                         solutions: [
-                            { desc: "建立雲端自選（iLeader, Newweb 大戶投）整合資訊", votes: 12 },
-                            { desc: "建立雲端自選（iLeader, Newweb 大戶投）", votes: 12 },
-                            { desc: "編輯總攬版面(自訂功能)", votes: 0 }
+                            { desc: "建立雲端自選（iLeader, Newweb 大戶投）整合資訊", votes: 12 }
                         ]
                     },
                     {
@@ -552,7 +548,8 @@
                         score: 4,
                         title: "憑證載入中斷",
                         pains: [
-                            "網頁端常會遇到憑證載入障礙，需消除複雜斷點：大戶投 -> Web"
+                            "網頁會遇到憑證問題，需消除節點：右上人頭 -> Flag",
+                            "憑證問題：大戶頭 -> Web"
                         ],
                         gains: [],
                         solutions: []
@@ -565,13 +562,14 @@
                         score: 4,
                         title: "智慧單商品無自選/庫存",
                         pains: [
-                            "台股智慧單選商品時，無法直接帶入庫存 or 自選清單",
-                            "智慧單溝通名詞與說明不一致，造成新手學習門檻",
-                            "美股與台股智慧單操作位置、功能設置不同"
+                            "台股智慧單選商品無庫存/自選",
+                            "智慧單溝通名詞不一致",
+                            "美股和台股智慧單位置、功能不同"
                         ],
                         gains: [
-                            "編輯總覽版面，自訂功能按鈕與進行名詞整合",
-                            "需要主動發出「警示提醒通知」"
+                            "名詞整合",
+                            "需要「警示提醒通知」",
+                            "大戶頭定期定額增加跨日選項（ex: 複委託長效單）"
                         ],
                         solutions: []
                     },
@@ -598,7 +596,7 @@
                         title: "閃電下單反應慢",
                         pains: [
                             "閃電下單反應速度太慢",
-                            "閃電下單介面不夠直白"
+                            "閃電下單介面不直白"
                         ],
                         gains: [],
                         solutions: []
